@@ -6,6 +6,11 @@
   let themeButton = null;
   const getSavedTheme = () => { try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; } };
   const saveTheme = theme => { try { localStorage.setItem(THEME_KEY, theme); } catch (e) {} };
+  const clearTheme = () => { try { localStorage.removeItem(THEME_KEY); } catch (e) {} };
+  // The device's light/dark setting is the default; a toggle click only overrides it when it differs.
+  const deviceLight = window.matchMedia('(prefers-color-scheme: light)');
+  const deviceTheme = () => deviceLight.matches ? 'light' : 'dark';
+  const savedOrDevice = () => { const saved = getSavedTheme(); return saved === 'light' || saved === 'dark' ? saved : deviceTheme(); };
   function applyTheme(theme) {
     root.setAttribute('data-theme', theme);
     themeMeta?.setAttribute('content', theme === 'light' ? '#f6f4f1' : '#050505');
@@ -16,9 +21,9 @@
       themeButton.setAttribute('aria-pressed', String(theme === 'light'));
     }
   }
-  // Default is dark. To follow the device setting instead, replace 'dark' below with:
-  // (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
-  applyTheme(getSavedTheme() === 'light' ? 'light' : 'dark');
+  applyTheme(savedOrDevice());
+  // Follow the device live (e.g. phone switching to dark at night) unless the visitor picked a theme.
+  deviceLight.addEventListener?.('change', () => { if (!getSavedTheme()) applyTheme(deviceTheme()); });
 
   const menuButton = document.querySelector('.menu-toggle');
   const nav = document.querySelector('#primary-nav');
@@ -45,9 +50,10 @@
     themeButton.addEventListener('click', () => {
       const nextTheme = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       applyTheme(nextTheme);
-      saveTheme(nextTheme);
+      // Picking the same theme as the device goes back to following the device.
+      if (nextTheme === deviceTheme()) clearTheme(); else saveTheme(nextTheme);
     });
-    applyTheme(root.getAttribute('data-theme') || 'dark');
+    applyTheme(root.getAttribute('data-theme') || savedOrDevice());
   }
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
 
