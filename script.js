@@ -94,7 +94,7 @@
     const step = amount => goTo(index + amount);
 
     // ===== Autoplay =====
-    const AUTOPLAY_MS = 1400; // time each photo stays in the center (change this to speed up / slow down)
+    const AUTOPLAY_MS = 2500; // time each photo stays in the center (change this to speed up / slow down)
     let autoTimer = null;
     let paused = false;
     function stopAuto() { clearTimeout(autoTimer); autoTimer = null; }
