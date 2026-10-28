@@ -11,6 +11,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- Set the theme before the page paints (no dark flash on light-mode devices). script.js handles the rest. -->
+  <script>
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('gps-theme'); } catch (e) {}
+      var light = saved ? saved === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
+      document.documentElement.setAttribute('data-theme', light ? 'light' : 'dark');
+    })();
+  </script>
 </head>
 <body>
   <header class="site-header">
