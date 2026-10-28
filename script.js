@@ -51,7 +51,8 @@
   }
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
 
-  // Lightweight infinite carousel: cloned end cards make the loop feel seamless.
+  // Fanned carousel: the active photo sits in the center, two on each side overlap behind it.
+  // Positions/scales live in style.css under [data-slot]; this only decides which card goes where.
   const shell = document.querySelector('#graduation-carousel');
   const viewport = document.querySelector('#carousel-viewport');
   const track = document.querySelector('#portrait-gallery');
@@ -60,165 +61,224 @@
   const dots = [...document.querySelectorAll('.carousel-dot')];
   const count = document.querySelector('#carousel-count');
   if (viewport && track) {
-    const originals = [...track.querySelectorAll('.portrait')];
-    const total = originals.length;
-    const cloneCard = (card, cloneIndex) => {
-      const clone = card.cloneNode(true);
-      clone.dataset.clone = 'true';
-      clone.dataset.realIndex = card.dataset.slide;
-      clone.dataset.cloneIndex = String(cloneIndex);
-      clone.setAttribute('aria-hidden', 'true');
-      clone.querySelector('img')?.setAttribute('loading', 'lazy');
-      return clone;
-    };
-    // Two clones on either side allow neighboring portraits to remain visible.
-    originals.slice(-2).forEach((card, i) => track.prepend(cloneCard(card, -2 + i)));
-    originals.slice(0, 2).forEach((card, i) => track.append(cloneCard(card, total + i)));
     const cards = [...track.querySelectorAll('.portrait')];
-    let index = 4; // Start on the third sample, matching the initial featured portrait.
-    let isAnimating = false;
-    let dragStartX = 0;
-    let dragDelta = 0;
-    let isDragging = false;
-    let dragPointer = null;
-    let resizeFrame = 0;
+    const total = cards.length;
+    let index = Math.min(2, total - 1); // Start on the third sample.
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const duration = () => reducedMotion.matches ? '0ms' : '520ms';
-    const realIndex = i => ((i - 2) % total + total) % total;
 
-    // ===== Autoplay =====
-    const AUTOPLAY_MS = 3000; // time between slides (change this to speed up / slow down)
-    let autoTimer = null;
-    const stopAuto = () => { clearInterval(autoTimer); autoTimer = null; };
-    const startAuto = () => {
-      stopAuto();
-      if (reducedMotion.matches || document.hidden) return;
-      autoTimer = setInterval(() => { if (!isDragging) step(1); }, AUTOPLAY_MS);
-    };
-
-    function paint(animate = true) {
-      const active = cards[index];
-      if (!active) return;
-      track.style.transition = animate ? `transform ${duration()} cubic-bezier(.22,.75,.25,1)` : 'none';
-      const center = active.offsetLeft + active.offsetWidth / 2;
-      track.style.transform = `translate3d(${viewport.clientWidth / 2 - center}px,0,0)`;
+    function paint() {
       cards.forEach((card, i) => {
-        const distance = i - index;
-        card.classList.toggle('is-active', i === index);
-        card.classList.toggle('is-neighbor', Math.abs(distance) === 1);
-        card.style.setProperty('--distance', Math.min(Math.abs(distance), 4));
-        card.setAttribute('aria-label', `Portrait ${realIndex(i) + 1} of ${total}`);
+        // Shortest signed distance from the center photo (wraps around = loop).
+        let d = ((i - index) % total + total) % total;
+        if (d > total / 2) d -= total;
+        const visible = Math.abs(d) <= 2;
+        card.dataset.slot = visible ? String(d) : (d > 0 ? 'out-right' : 'out-left');
+        card.classList.toggle('is-active', d === 0);
+        card.setAttribute('aria-label', `Portrait ${i + 1} of ${total}`);
+        if (visible) card.removeAttribute('aria-hidden');
+        else card.setAttribute('aria-hidden', 'true');
       });
-      const activeReal = realIndex(index);
       dots.forEach((dot, i) => {
-        const selected = i === activeReal;
+        const selected = i === index;
         dot.classList.toggle('is-active', selected);
         if (selected) dot.setAttribute('aria-current', 'true');
         else dot.removeAttribute('aria-current');
       });
-      if (count) count.textContent = `${String(activeReal + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+      if (count) count.textContent = `${String(index + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
     }
-    function goTo(nextIndex, animate = true) {
-      if (isAnimating && animate) return;
-      index = nextIndex;
-      isAnimating = animate;
-      paint(animate);
-      if (animate && !reducedMotion.matches) window.setTimeout(() => { isAnimating = false; normalize(); }, 560);
-      else { isAnimating = false; normalize(); }
+    function goTo(nextIndex) {
+      index = ((nextIndex % total) + total) % total;
+      paint();
+      scheduleAuto();
     }
-    // Silent jump from a cloned card back to its real twin (no visible animation).
-    function normalize() {
-      let jumped = false;
-      if (index >= total + 2) { index -= total; jumped = true; }
-      else if (index < 2) { index += total; jumped = true; }
-      if (!jumped) return;
-      track.classList.add('no-anim');
-      paint(false);
-      void track.offsetWidth; // force reflow so the swap is instant
-      track.classList.remove('no-anim');
+    const step = amount => goTo(index + amount);
+
+    // ===== Autoplay =====
+    const AUTOPLAY_MS = 1400; // time each photo stays in the center (change this to speed up / slow down)
+    let autoTimer = null;
+    let paused = false;
+    function stopAuto() { clearTimeout(autoTimer); autoTimer = null; }
+    function scheduleAuto() {
+      stopAuto();
+      if (paused || reducedMotion.matches || document.hidden || total < 2) return;
+      autoTimer = setTimeout(() => step(1), AUTOPLAY_MS);
     }
-    function step(amount) { goTo(index + amount); }
+    const pause = () => { paused = true; stopAuto(); };
+    const resume = () => { paused = false; scheduleAuto(); };
+
     prev?.addEventListener('click', () => step(-1));
     next?.addEventListener('click', () => step(1));
-    dots.forEach((dot, i) => dot.addEventListener('click', () => {
-      const currentReal = realIndex(index);
-      let delta = i - currentReal;
-      if (delta > total / 2) delta -= total;
-      if (delta < -total / 2) delta += total;
-      goTo(index + delta);
-    }));
-    track.addEventListener('transitionend', event => {
-      if (event.target !== track || event.propertyName !== 'transform') return;
-      normalize();
-      isAnimating = false;
-    });
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
     viewport.addEventListener('keydown', event => {
       if (event.key === 'ArrowLeft') { event.preventDefault(); step(-1); }
       if (event.key === 'ArrowRight') { event.preventDefault(); step(1); }
-      if (event.key === 'Home') { event.preventDefault(); goTo(2); }
-      if (event.key === 'End') { event.preventDefault(); goTo(total + 1); }
+      if (event.key === 'Home') { event.preventDefault(); goTo(0); }
+      if (event.key === 'End') { event.preventDefault(); goTo(total - 1); }
     });
+
+    // Swipe / mouse drag: a short horizontal flick moves one photo.
+    let dragStartX = null;
+    let dragged = false;
     viewport.addEventListener('pointerdown', event => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
-      isDragging = true; dragPointer = event.pointerId; dragStartX = event.clientX; dragDelta = 0;
+      dragStartX = event.clientX; dragged = false;
       viewport.classList.add('is-dragging');
-      track.style.transition = 'none';
-      viewport.setPointerCapture?.(event.pointerId);
     });
-    viewport.addEventListener('pointermove', event => {
-      if (!isDragging || event.pointerId !== dragPointer) return;
-      dragDelta = event.clientX - dragStartX;
-      const active = cards[index];
-      const center = active.offsetLeft + active.offsetWidth / 2;
-      track.style.transform = `translate3d(${viewport.clientWidth / 2 - center + dragDelta}px,0,0)`;
+    window.addEventListener('pointerup', event => {
+      if (dragStartX === null) return;
+      const delta = event.clientX - dragStartX;
+      dragStartX = null;
+      viewport.classList.remove('is-dragging');
+      if (Math.abs(delta) > 40) { dragged = true; step(delta < 0 ? 1 : -1); }
     });
-    function finishDrag(event) {
-      if (!isDragging || (event && event.pointerId !== dragPointer)) return;
-      isDragging = false; viewport.classList.remove('is-dragging');
-      if (Math.abs(dragDelta) > Math.min(55, viewport.clientWidth * .12)) step(dragDelta < 0 ? 1 : -1);
-      else paint(true);
-      dragPointer = null; dragDelta = 0;
-    }
-    viewport.addEventListener('pointerup', finishDrag);
-    viewport.addEventListener('pointercancel', finishDrag);
-    viewport.addEventListener('lostpointercapture', finishDrag);
+    window.addEventListener('pointercancel', () => { dragStartX = null; viewport.classList.remove('is-dragging'); });
+    // Clicking a side photo brings it to the center.
     viewport.addEventListener('click', event => {
+      if (dragged) { dragged = false; return; }
       const card = event.target.closest('.portrait');
-      if (!card || isDragging) return;
       const cardIndex = cards.indexOf(card);
       if (cardIndex >= 0 && cardIndex !== index) goTo(cardIndex);
     });
-    // Trackpad horizontal gestures remain native; vertical wheel is not hijacked.
+    // Horizontal trackpad swipes only; vertical wheel keeps scrolling the page.
+    let wheelCooldown = false;
     viewport.addEventListener('wheel', event => {
-      if (Math.abs(event.deltaX) > Math.abs(event.deltaY) && Math.abs(event.deltaX) > 12) {
-        event.preventDefault(); step(event.deltaX > 0 ? 1 : -1);
-      }
+      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) || Math.abs(event.deltaX) < 12) return;
+      event.preventDefault();
+      if (wheelCooldown) return;
+      step(event.deltaX > 0 ? 1 : -1);
+      wheelCooldown = true;
+      setTimeout(() => { wheelCooldown = false; }, 450);
     }, { passive: false });
-    window.addEventListener('resize', () => {
-      cancelAnimationFrame(resizeFrame);
-      resizeFrame = requestAnimationFrame(() => paint(false));
-    });
-    reducedMotion.addEventListener?.('change', () => { paint(false); startAuto(); });
-    paint(false);
-    // Repaint after images load so the active card remains centered at all widths.
-    track.querySelectorAll('img').forEach(img => img.addEventListener('load', () => paint(false), { once: true }));
     track.querySelectorAll('img').forEach(img => img.addEventListener('error', () => {
       img.closest('.portrait')?.classList.add('asset-missing');
     }, { once: true }));
 
-    // Autoplay triggers: pause while hovering / focused / touching, resume after.
-    // Also pauses when the browser tab is hidden.
+    // Autoplay pauses while hovering / focused / touching, and when the browser tab is hidden.
     const hoverTarget = shell || viewport;
-    hoverTarget.addEventListener('mouseenter', stopAuto);
-    hoverTarget.addEventListener('mouseleave', startAuto);
-    hoverTarget.addEventListener('focusin', stopAuto);
-    hoverTarget.addEventListener('focusout', startAuto);
-    hoverTarget.addEventListener('touchstart', stopAuto, { passive: true });
-    hoverTarget.addEventListener('touchend', startAuto, { passive: true });
-    hoverTarget.addEventListener('touchcancel', startAuto, { passive: true });
-    document.addEventListener('visibilitychange', () => { document.hidden ? stopAuto() : startAuto(); });
-    startAuto();
+    hoverTarget.addEventListener('mouseenter', pause);
+    hoverTarget.addEventListener('mouseleave', resume);
+    hoverTarget.addEventListener('focusin', pause);
+    hoverTarget.addEventListener('focusout', resume);
+    hoverTarget.addEventListener('touchstart', pause, { passive: true });
+    hoverTarget.addEventListener('touchend', resume, { passive: true });
+    hoverTarget.addEventListener('touchcancel', resume, { passive: true });
+    document.addEventListener('visibilitychange', () => { document.hidden ? stopAuto() : scheduleAuto(); });
+    reducedMotion.addEventListener?.('change', scheduleAuto);
+
+    paint();
+    scheduleAuto();
   }
+
+  // Open mailto links in Gmail compose (desktop only; phones keep the default mail app)
+  const desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
+    link.addEventListener('click', event => {
+      if (!desktopPointer.matches) return;
+      event.preventDefault();
+      const url = new URL(link.href);
+      const params = new URLSearchParams({ view: 'cm', fs: '1', to: decodeURIComponent(url.pathname) });
+      const subject = url.searchParams.get('subject');
+      if (subject) params.set('su', subject);
+      window.open(`https://mail.google.com/mail/?${params}`, '_blank', 'noopener');
+    });
+  });
+
+  // ===== Floating panels (Frames / Packages) =====
+  // One reusable controller for every `.gps-modal[data-modal="name"]`.
+  // Open with [data-open-modal="name"], close with [data-close-modal], backdrop click or Escape.
+  const modals = {};
+  document.querySelectorAll('.gps-modal').forEach(m => { modals[m.dataset.modal] = m; });
+  if (Object.keys(modals).length) {
+    const pageParts = ['.site-header', 'main', '.site-footer'].map(s => document.querySelector(s)).filter(Boolean);
+    const FOCUSABLE = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
+    let activeModal = null;
+    let lastFocus = null;
+
+    const lockScroll = () => {
+      const bar = window.innerWidth - root.clientWidth;
+      document.body.style.overflow = 'hidden';
+      if (bar > 0) document.body.style.paddingRight = bar + 'px';
+    };
+    const unlockScroll = () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
+    const setBackground = hidden => pageParts.forEach(el => {
+      if (hidden) el.setAttribute('inert', ''); else el.removeAttribute('inert');
+    });
+
+    function openModal(name, trigger) {
+      const next = modals[name];
+      if (!next || next === activeModal) return;
+      if (activeModal) {
+        // Switching panels: keep the page locked, just swap the visible panel.
+        activeModal.classList.remove('is-open');
+        activeModal.setAttribute('aria-hidden', 'true');
+      } else {
+        lastFocus = trigger || document.activeElement;
+        lockScroll();
+        setBackground(true);
+        closeMenu();
+      }
+      activeModal = next;
+      next.removeAttribute('aria-hidden');
+      next.classList.add('is-open');
+      const body = next.querySelector('.gps-modal__body');
+      if (body) body.scrollTop = 0;
+      next.querySelector('.gps-modal__close')?.focus({ preventScroll: true });
+    }
+
+    function closeModal() {
+      if (!activeModal) return;
+      activeModal.classList.remove('is-open');
+      activeModal.setAttribute('aria-hidden', 'true');
+      activeModal = null;
+      setBackground(false);
+      unlockScroll();
+      if (lastFocus && lastFocus.focus) {
+        lastFocus.focus({ preventScroll: true });
+        // The trigger may sit inside the (closed) mobile menu; fall back to the hamburger.
+        if (document.activeElement !== lastFocus) menuButton?.focus({ preventScroll: true });
+      }
+      lastFocus = null;
+    }
+
+    document.querySelectorAll('[data-open-modal]').forEach(el => el.addEventListener('click', event => {
+      event.preventDefault(); // keep the URL and the landing page position unchanged
+      openModal(el.dataset.openModal, el);
+    }));
+    document.querySelectorAll('[data-close-modal]').forEach(el => el.addEventListener('click', closeModal));
+
+    // Backdrop click closes; clicks (or text-selection drags) that start inside the panel do not.
+    Object.values(modals).forEach(modal => {
+      let downOnBackdrop = false;
+      modal.addEventListener('pointerdown', event => { downOnBackdrop = event.target === modal; });
+      modal.addEventListener('click', event => {
+        if (downOnBackdrop && event.target === modal) closeModal();
+        downOnBackdrop = false;
+      });
+    });
+
+    document.addEventListener('keydown', event => {
+      if (!activeModal) return;
+      if (event.key === 'Escape') { event.preventDefault(); closeModal(); return; }
+      if (event.key !== 'Tab') return;
+      // Focus trap: keep Tab cycling inside the open panel.
+      const items = [...activeModal.querySelectorAll(FOCUSABLE)].filter(el => el.offsetParent !== null);
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (!activeModal.contains(document.activeElement)) { event.preventDefault(); first.focus(); }
+      else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
+
+    // Hide broken preview images instead of showing the browser's broken-image icon.
+    document.querySelectorAll('.gps-modal img').forEach(img => {
+      img.addEventListener('error', () => { img.style.visibility = 'hidden'; }, { once: true });
+    });
+  }
+
   const year = document.querySelector('#year');
   if (year) year.textContent = new Date().getFullYear();
 })();
