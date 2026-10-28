@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#050505">
   <meta name="description" content="Professional graduation photography that captures your hard work, journey, and the next chapter of your story. Grad Pro Studios Photography Inc.">
   <title>Grad Pro Studios | Graduation Photography</title>
-  <link rel="icon" type="image/png" href="GPS.png">
+  <link rel="icon" type="image/png" href="assets/GPS.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
       <a class="brand" href="#home" aria-label="Grad Pro Studios home"><img src="assets/GPS.png" alt="Grad Pro Studios logo"><span>GRAD PRO <b>STUDIOS</b></span></a>
       <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav"><span></span><span></span><span></span></button>
       <nav class="nav" id="primary-nav" aria-label="Main navigation">
-        <a class="nav-link active" href="#home">Home</a><a class="nav-link" href="#frames">Frames</a><a class="nav-link" href="#packages">Packages</a><a class="nav-link" href="#about">About Us</a>
+        <a class="nav-link active" href="#home">Home</a><a class="nav-link" href="#frames" data-open-modal="frames" aria-haspopup="dialog">Frames</a><a class="nav-link" href="#packages" data-open-modal="packages" aria-haspopup="dialog">Packages</a><a class="nav-link" href="#about">About Us</a>
         </nav>
     </div>
   </header>
@@ -34,21 +34,34 @@
         <div class="hero-note"><span class="note-line"></span><span>Made to remember. Made to last.</span></div>
       </div>
       <div class="gallery-wrap" id="frames" aria-label="Graduation portrait showcase">
-        <div class="gallery-topline"><span>THE GRAD PRO COLLECTION</span><span>01 — 07</span></div>
+        <div class="gallery-topline"><span>THE GRAD PRO COLLECTION</span></div>
         <div class="carousel-shell" id="graduation-carousel" role="region" aria-roledescription="carousel" aria-label="Graduation portraits">
-          <button type="button" class="gallery-arrow carousel-arrow carousel-prev" id="gallery-prev" aria-label="Show previous graduation portrait">&#8592;</button>
           <div class="carousel-viewport" id="carousel-viewport" tabindex="0" aria-label="Use left and right arrow keys to browse portraits">
             <div class="portrait-gallery" id="portrait-gallery">
-              <figure class="portrait portrait-small" data-slide="0"><img src="frames/sample1.jpg" alt="Graduation portrait sample one" loading="eager" draggable="false"><figcaption>01 / The Moment</figcaption></figure>
-              <figure class="portrait portrait-tall" data-slide="1"><img src="frames/sample2.jpg" alt="Graduation portrait sample two" loading="lazy" draggable="false"><figcaption>02 / The Journey</figcaption></figure>
-              <figure class="portrait portrait-featured" data-slide="2"><img src="frames/sample3.jpg" alt="Graduation portrait sample three" loading="lazy" draggable="false"><figcaption>03 / The Graduate</figcaption></figure>
-              <figure class="portrait portrait-tall" data-slide="3"><img src="frames/sample4.jpg" alt="Graduation portrait sample four" loading="lazy" draggable="false"><figcaption>04 / The Pride</figcaption></figure>
-              <figure class="portrait portrait-small" data-slide="4"><img src="frames/sample5.jpg" alt="Graduation portrait sample five" loading="lazy" draggable="false"><figcaption>05 / The Family</figcaption></figure>
-              <figure class="portrait portrait-tall" data-slide="5"><img src="frames/sample6.jpg" alt="Graduation portrait sample six" loading="lazy" draggable="false"><figcaption>06 / The Future</figcaption></figure>
-              <figure class="portrait portrait-small" data-slide="6"><img src="frames/sample7.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07 / The Legacy</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="0"><img src="frames/SAMPLE 1.jpg" alt="Graduation portrait sample one" loading="eager" draggable="false"><figcaption>01</figcaption></figure>
+              <figure class="portrait portrait-tall" data-slide="1"><img src="frames/SAMPLE 2.jpg" alt="Graduation portrait sample two" loading="lazy" draggable="false"><figcaption>02</figcaption></figure>
+              <figure class="portrait portrait-featured" data-slide="2"><img src="frames/SAMPLE 3.jpg" alt="Graduation portrait sample three" loading="lazy" draggable="false"><figcaption>03</figcaption></figure>
+              <figure class="portrait portrait-tall" data-slide="3"><img src="frames/SAMPLE 4.jpg" alt="Graduation portrait sample four" loading="lazy" draggable="false"><figcaption>04</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="4"><img src="frames/SAMPLE 5.jpg" alt="Graduation portrait sample five" loading="lazy" draggable="false"><figcaption>05</figcaption></figure>
+              <figure class="portrait portrait-tall" data-slide="5"><img src="frames/SAMPLE 6.jpg" alt="Graduation portrait sample six" loading="lazy" draggable="false"><figcaption>06</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="7"><img src="frames/SAMPLE 8.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="8"><img src="frames/SAMPLE 9.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="9"><img src="frames/SAMPLE 10.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="10"><img src="frames/SAMPLE 11.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="11"><img src="frames/SAMPLE 12.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="12"><img src="frames/SAMPLE 13.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="13"><img src="frames/SAMPLE 14.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="14"><img src="frames/SAMPLE 15.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="15"><img src="frames/SAMPLE 16.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="16"><img src="frames/SAMPLE 17.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="17"><img src="frames/SAMPLE 18.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="18"><img src="frames/SAMPLE 19.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="19"><img src="frames/SAMPLE 20.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="20"><img src="frames/SAMPLE 21.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="21"><img src="frames/SAMPLE 22.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
+              <figure class="portrait portrait-small" data-slide="22"><img src="frames/SAMPLE 23.jpg" alt="Graduation portrait sample seven" loading="lazy" draggable="false"><figcaption>07</figcaption></figure>
             </div>
           </div>
-          <button type="button" class="gallery-arrow carousel-arrow carousel-next" id="gallery-next" aria-label="Show next graduation portrait">&#8594;</button>
         </div>
         <div class="carousel-pagination" id="carousel-pagination" role="group" aria-label="Choose graduation portrait">
           <button type="button" class="carousel-dot is-active" aria-label="Go to portrait 1" aria-current="true"></button>
@@ -59,7 +72,7 @@
           <button type="button" class="carousel-dot" aria-label="Go to portrait 6"></button>
           <button type="button" class="carousel-dot" aria-label="Go to portrait 7"></button>
         </div>
-        <div class="gallery-controls"><span>SWIPE OR USE ARROWS TO EXPLORE</span><span class="carousel-count" id="carousel-count" aria-live="polite">03 / 07</span></div>
+        <div class="gallery-controls"><span>SWIPE OR TAP A PHOTO TO EXPLORE</span><span class="carousel-count" id="carousel-count" aria-live="polite">03 / 07</span></div>
       </div>
     </section>
 
@@ -69,10 +82,106 @@
       <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg></div><div><h2>Trusted by Graduates</h2><p>Serving schools and universities with dedication and professionalism.</p></div></article>
     </section>
 
-    <section class="packages" id="packages"><div><p class="eyebrow"><span></span> Your moment, your way</p><h2>Find the package<br><em>that fits your story.</em></h2></div><a class="cta cta-outline" href="mailto:hello@gradprostudios.com?subject=Graduation%20Photography%20Packages">Ask About Packages <span aria-hidden="true">↗</span></a></section>
+    <section class="packages" id="packages"><div><p class="eyebrow"><span></span> Your moment, your way</p><h2>Find the package<br><em>that fits your story.</em></h2></div><a class="cta cta-outline" href="mailto:admin@gradprostudios.com?subject=Graduation%20Photography%20Packages">Ask About Packages <span aria-hidden="true">↗</span></a></section>
   </main>
 
-  <footer class="site-footer"><a class="footer-brand" href="#home">GRAD PRO <b>STUDIOS</b></a><a href="">admin@gradprostudios.com</a><div class="footer-socials"><a href="https://www.facebook.com/gradprostudios" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3 0-5 2-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.7.3-1 1-1Z"/></svg><span>Facebook</span></a></div><span class="copyright">© <span id="year"></span> Grad Pro Studios Photography Inc.</span></footer>
-  <script src="script.js"></script>
+  <!-- ===== Floating panels: Frames & Packages (opened from the nav) ===== -->
+  <div class="gps-modal" data-modal="frames" id="modal-frames" aria-hidden="true">
+    <div class="gps-modal__panel" role="dialog" aria-modal="true" aria-labelledby="frames-title">
+      <div class="gps-modal__bar">
+        <div class="gps-modal__tabs" role="group" aria-label="Switch panel">
+          <button type="button" class="gps-modal__tab" data-open-modal="frames" aria-current="true">Frames</button>
+          <button type="button" class="gps-modal__tab" data-open-modal="packages">Packages</button>
+        </div>
+        <button type="button" class="gps-modal__close" data-close-modal aria-label="Close Frames panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="gps-modal__body" tabindex="0">
+        <div class="frames-intro">
+          <header class="gps-modal__head">
+            <p class="eyebrow"><span></span> Frames</p>
+            <h2 id="frames-title">Find Your <em>Perfect Frame</em></h2>
+            <p>Your graduation day only happens once. Keep it where you can see it every day with a frame made to preserve those memories. Available for walk-in and add-on orders.</p>
+          </header>
+          <figure class="frames-showcase"><img src="frames/hero-desktop2.jpg" alt="Framed graduation portrait with name plate, displayed on a wooden console at home" loading="lazy" decoding="async"></figure>
+        </div>
+        <div class="frame-grid">
+          <article class="frame-card"><div class="frame-art"><div class="frame frame--floating"><img src="frames/sample1.jpg" alt="8x10 Floating frame preview" loading="lazy" decoding="async"></div></div><h3>8x10 Floating</h3><p class="frame-price">₱690</p></article>
+          <article class="frame-card"><div class="frame-art"><div class="frame frame--wnl"><img src="frames/sample2.jpg" alt="WNL frame preview" loading="lazy" decoding="async"></div></div><h3>WNL</h3><p class="frame-price">₱790</p></article>
+          <article class="frame-card"><div class="frame-art"><div class="frame frame--platinum"><img src="frames/sample3.jpg" alt="Platinum frame preview" loading="lazy" decoding="async"></div></div><h3>Platinum</h3><p class="frame-price">₱890</p></article>
+          <article class="frame-card"><div class="frame-art"><div class="frame frame--large"><img src="frames/sample4.jpg" alt="11x14 frame preview" loading="lazy" decoding="async"></div></div><h3>11x14</h3><p class="frame-price">₱1,090</p></article>
+          <article class="frame-card"><div class="frame-art"><div class="frame frame--ultimate"><img src="frames/sample5.jpg" alt="Ultimate frame preview" loading="lazy" decoding="async"></div></div><h3>Ultimate</h3><p class="frame-price">₱1,290</p></article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gps-modal" data-modal="packages" id="modal-packages" aria-hidden="true">
+    <div class="gps-modal__panel" role="dialog" aria-modal="true" aria-labelledby="packages-title">
+      <div class="gps-modal__bar">
+        <div class="gps-modal__tabs" role="group" aria-label="Switch panel">
+          <button type="button" class="gps-modal__tab" data-open-modal="frames">Frames</button>
+          <button type="button" class="gps-modal__tab" data-open-modal="packages" aria-current="true">Packages</button>
+        </div>
+        <button type="button" class="gps-modal__close" data-close-modal aria-label="Close Packages panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="gps-modal__body" tabindex="0">
+        <header class="gps-modal__head">
+          <p class="eyebrow"><span></span> Our Packages</p>
+          <h2 id="packages-title">Choose Your <em>Graduation Package</em></h2>
+          <p>Choose the perfect package for your graduation memories. Quality photos, professional service, and timeless keepsakes.</p>
+        </header>
+
+        <div class="pkg-grid">
+          <article class="pkg-card">
+            <div class="pkg-title"><h3>Basic Package <small>(Walk-in)</small></h3></div>
+            <div class="pkg-preview" aria-hidden="true"><img src="frames/sample1.jpg" alt="" loading="lazy" decoding="async"><img class="is-main" src="frames/sample3.jpg" alt="" loading="lazy" decoding="async"><img src="frames/sample5.jpg" alt="" loading="lazy" decoding="async"></div>
+            <ul class="pkg-list">
+              <li>Toga - 1 copy 8R, 2 copies 3R, 4 copies 2R</li>
+              <li>Soft Copy of all UNEDITED (RAW) and EDITED Photos</li>
+              <li>Free shots with family/friends/relatives (5 shots)</li>
+            </ul>
+            <p class="pkg-price"><strong>₱750</strong><span>per student/graduate</span></p>
+          </article>
+
+          <article class="pkg-card">
+            <div class="pkg-title"><h3>Framed Package <small>(Walk-in)</small></h3></div>
+            <div class="pkg-preview" aria-hidden="true"><img src="frames/sample2.jpg" alt="" loading="lazy" decoding="async"><img class="is-main is-framed" src="frames/sample3.jpg" alt="" loading="lazy" decoding="async"><img src="frames/sample6.jpg" alt="" loading="lazy" decoding="async"></div>
+            <ul class="pkg-list">
+              <li>Toga - 1 copy 8R with FLOATING FRAME, 2 copies 3R, 4 copies 2R</li>
+              <li>Soft Copy of all UNEDITED (RAW) and EDITED Photos</li>
+              <li>Free shots with family/friends/relatives (5 shots)</li>
+            </ul>
+            <p class="pkg-price"><strong>₱1,100</strong><span>per student/graduate</span></p>
+          </article>
+
+          <article class="pkg-card">
+            <div class="pkg-title"><h3>Platinum Package <small>(Walk-in)</small></h3></div>
+            <div class="pkg-preview" aria-hidden="true"><img src="frames/sample4.jpg" alt="" loading="lazy" decoding="async"><img class="is-main is-glass" src="frames/sample3.jpg" alt="" loading="lazy" decoding="async"><img src="frames/sample7.jpg" alt="" loading="lazy" decoding="async"></div>
+            <ul class="pkg-list">
+              <li>Toga - 1 copy 8R photo with Name and School Logo on Glass Floating Frame</li>
+              <li>2 copies 3R, 4 copies 2R, 5 copies 2x2, 10 copies 1x1</li>
+              <li>Soft Copy of all UNEDITED (RAW) and EDITED Photos</li>
+              <li>Free shots with family/friends/relatives (5 shots)</li>
+            </ul>
+            <p class="pkg-price"><strong>₱1,400</strong><span>per student/graduate</span></p>
+          </article>
+        </div>
+
+        <section class="addon" aria-labelledby="addon-title">
+          <div class="addon-main">
+            <h3 id="addon-title"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Optional Add-ons</h3>
+            <p class="addon-row"><span class="addon-price">₱250</span><span>Add 1 more shot <small>(different attire)</small></span></p>
+          </div>
+          <div class="addon-detail">
+            <strong>Added 1 shot (3 poses)</strong>
+            <span>2 copies 3R, 4 copies 2R + Soft Copy Raw and Edited</span>
+          </div>
+        </section>
+        <p class="gps-modal__note">Sample photos shown for illustration.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer"><a class="footer-brand" href="#home">GRAD PRO <b>STUDIOS</b></a><a href="mailto:admin@gradprostudios.com">admin@gradprostudios.com</a><div class="footer-socials"><a href="https://www.facebook.com/gradprostudios" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3 0-5 2-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.7.3-1 1-1Z"/></svg><span>Facebook</span></a></div><span class="copyright">© <span id="year"></span> Grad Pro Studios Photography Inc.</span></footer><script src="script.js"></script>
 </body>
 </html>
