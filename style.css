@@ -85,14 +85,14 @@ button{font:inherit}
     align-items:center;
     gap:11px;
     white-space:nowrap;
-    font-size:14px;
+    font: size 20px;px;
     font-weight:800;
     letter-spacing:.13em
 }
 
 .brand img{
-    width:42px;
-    height:42px;
+    width: 120px;
+    height:60px;
     object-fit:contain
 }
 
