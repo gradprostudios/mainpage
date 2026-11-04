@@ -96,6 +96,11 @@ button{font:inherit}
     object-fit:contain
 }
 
+/* One logo per theme: logo-dark.png on dark backgrounds, logo.png on light */
+.brand .logo-light{display:none}
+:root[data-theme="light"] .brand .logo-light{display:block}
+:root[data-theme="light"] .brand .logo-dark{display:none}
+
 .brand b,.footer-brand b{
     color:var(--gold)
 }
