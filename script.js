@@ -64,11 +64,20 @@
   const track = document.querySelector('#portrait-gallery');
   const prev = document.querySelector('#gallery-prev');
   const next = document.querySelector('#gallery-next');
-  const dots = [...document.querySelectorAll('.carousel-dot')];
+  const pagination = document.querySelector('#carousel-pagination');
   const count = document.querySelector('#carousel-count');
   if (viewport && track) {
     const cards = [...track.querySelectorAll('.portrait')];
     const total = cards.length;
+    // One dot per photo, so adding/removing photos in index.html needs no other change.
+    pagination?.replaceChildren(...cards.map((_, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'carousel-dot';
+      dot.setAttribute('aria-label', `Go to portrait ${i + 1}`);
+      return dot;
+    }));
+    const dots = [...document.querySelectorAll('.carousel-dot')];
     let index = Math.min(2, total - 1); // Start on the third sample.
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
