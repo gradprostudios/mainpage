@@ -184,6 +184,183 @@
     scheduleAuto();
   }
 
+  // ===== Frame styles: frames hanging on a wall =====
+  // Tap a frame (or a chip under the room) to zoom in on it; arrows / swipe move along the wall.
+  // Names, sizes and prices come from data-* on each .fw-frame in index.html.
+  const fwStage = document.querySelector('#fw-stage');
+  const fwRoom = document.querySelector('#fw-room');
+  const fwLayer = document.querySelector('#fw-layer');
+  const fwFrames = [...document.querySelectorAll('.fw-frame')];
+  if (fwStage && fwRoom && fwFrames.length) {
+    const byId = id => document.getElementById(id);
+    const pad2 = n => String(n).padStart(2, '0');
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    let current = -1;   // -1 = whole wall
+    let panX = null;    // sideways slide when the room is wider than the box
+    let startX = null, startPan = 0, moved = false;
+
+    const chips = fwFrames.map((frame, i) => {
+      const chip = document.createElement('button');
+      chip.type = 'button'; chip.className = 'fw-chip';
+      const img = document.createElement('img');
+      img.src = frame.querySelector('img').getAttribute('src'); img.alt = ''; img.loading = 'lazy';
+      chip.append(img, frame.dataset.name);
+      chip.addEventListener('click', () => zoomTo(i));
+      byId('fw-chips')?.append(chip);
+      return chip;
+    });
+
+    // Room-sized things: shadow/glow scale (em) and the wall light lined up on each frame.
+    function sizeRoomParts() {
+      const W = fwRoom.clientWidth, H = fwRoom.clientHeight;
+      fwRoom.style.fontSize = (W * 0.012) + 'px';
+      fwFrames.forEach(f => {
+        const art = f.querySelector('.fw-art');
+        art.style.setProperty('--bgw', W + 'px'); art.style.setProperty('--bgh', H + 'px');
+        art.style.setProperty('--bgx', -f.offsetLeft + 'px'); art.style.setProperty('--bgy', -f.offsetTop + 'px');
+      });
+    }
+    function layout() {
+      unbake();
+      sizeRoomParts();
+      if (panX === null) panX = (fwStage.clientWidth - fwRoom.clientWidth) / 2;
+      camera();
+    }
+
+    // Sharp zoom: the zoom animates with a CSS scale (smooth, but the browser stretches what it already drew,
+    // so photos look blurry). When the zoom finishes, the room is re-laid out at its real zoomed size
+    // ("baked") so the frame photos are drawn sharp. Before the next move it is put back the way it was.
+    let cam = { k: 1, tx: 0, ty: 0 }, baked = false, bakeTimer = null;
+    const noAnim = fn => { fwRoom.classList.add('fw-no-anim'); fn(); void fwRoom.offsetWidth; fwRoom.classList.remove('fw-no-anim'); };
+    function bake() {
+      if (baked || current < 0 || cam.k === 1) return;
+      noAnim(() => {
+        fwRoom.style.height = (fwStage.clientHeight * cam.k) + 'px';
+        sizeRoomParts();
+        fwRoom.style.transform = `translate(${cam.tx}px, ${cam.ty}px)`;
+      });
+      baked = true;
+    }
+    function unbake() {
+      clearTimeout(bakeTimer);
+      if (!baked) return;
+      noAnim(() => {
+        fwRoom.style.height = '';
+        sizeRoomParts();
+        fwRoom.style.transform = `translate(${cam.tx}px, ${cam.ty}px) scale(${cam.k})`;
+      });
+      baked = false;
+    }
+
+    // Camera: zoom/slide the room. Never shows past the photo's edges.
+    function camera() {
+      unbake();
+      const Ws = fwStage.clientWidth, Hs = fwStage.clientHeight, Wr = fwRoom.clientWidth, Hr = fwRoom.clientHeight;
+      let k = 1, tx, ty = 0;
+      if (current < 0) {
+        tx = clamp(panX, Math.min(0, Ws - Wr), 0);
+        panX = tx;
+      } else {
+        const f = fwFrames[current];
+        const fx = f.offsetLeft, fy = f.offsetTop, fw = f.offsetWidth, fh = f.offsetHeight;
+        k = Math.min(Ws * 0.9 / fw, Hs * 0.78 / fh); // close-up: only a little wall left around the frame
+        tx = clamp(Ws / 2 - k * (fx + fw / 2), Ws - k * Wr, 0);
+        ty = clamp(Hs * 0.5 - k * (fy + fh / 2), Hs - k * Hr, 0);
+      }
+      fwRoom.style.transform = `translate(${tx}px, ${ty}px) scale(${k})`;
+      cam = { k, tx, ty };
+      if (current >= 0) bakeTimer = setTimeout(bake, 1150); // just after the 1.1s zoom
+    }
+
+    function render() {
+      const zoomed = current >= 0;
+      fwStage.classList.toggle('is-zoomed', zoomed);
+      fwFrames.forEach((f, i) => {
+        f.classList.toggle('is-selected', i === current);
+        f.style.removeProperty('--tx'); f.style.removeProperty('--ty');
+        f.tabIndex = zoomed ? -1 : 0;
+      });
+      chips.forEach((c, i) => c.setAttribute('aria-current', String(i === current)));
+      byId('fw-wall-text').hidden = zoomed;
+      byId('fw-detail').hidden = !zoomed;
+      byId('fw-meta').hidden = !zoomed;
+      if (zoomed) {
+        const d = fwFrames[current].dataset;
+        const n = `${pad2(current + 1)} / ${pad2(fwFrames.length)}`;
+        byId('fw-zoom-count').textContent = n; byId('fw-detail-count').textContent = n;
+        byId('fw-zoom-name').textContent = d.name || ''; byId('fw-detail-name').textContent = d.name || '';
+        byId('fw-detail-desc').textContent = d.desc || ''; byId('fw-size').textContent = d.size || ''; byId('fw-price').textContent = d.price || '';
+      }
+      if (fwLayer) fwLayer.style.translate = '';
+      camera();
+    }
+    function zoomTo(i) { current = ((i % fwFrames.length) + fwFrames.length) % fwFrames.length; render(); }
+    function backToWall() {
+      unbake(); // read frame positions at normal size
+      const f = fwFrames[current];
+      if (f) panX = fwStage.clientWidth / 2 - (f.offsetLeft + f.offsetWidth / 2);
+      current = -1; render();
+    }
+
+    fwFrames.forEach((f, i) => f.addEventListener('click', () => { if (current < 0 && !moved) zoomTo(i); }));
+    byId('fw-back')?.addEventListener('click', backToWall);
+    byId('fw-prev')?.addEventListener('click', () => zoomTo(current - 1));
+    byId('fw-next')?.addEventListener('click', () => zoomTo(current + 1));
+    document.addEventListener('keydown', e => {
+      if (current < 0) return;
+      if (e.key === 'Escape') backToWall();
+      if (e.key === 'ArrowLeft') zoomTo(current - 1);
+      if (e.key === 'ArrowRight') zoomTo(current + 1);
+    });
+    window.addEventListener('resize', layout);
+    window.matchMedia('(max-width:760px)').addEventListener?.('change', () => { panX = null; layout(); });
+    fwRoom.querySelector('.fw-photo')?.addEventListener('load', layout);
+
+    // Mouse depth: frames drift a little against the room; zoomed in, the frame tilts toward the pointer.
+    fwStage.addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse' || startX !== null) return;
+      const r = fwStage.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width * 2 - 1, py = (e.clientY - r.top) / r.height * 2 - 1;
+      if (current < 0) { if (fwLayer) fwLayer.style.translate = `${px * -4}px ${py * -3}px`; }
+      else {
+        const f = fwFrames[current];
+        f.style.setProperty('--tx', clamp(px * 1.2, -1, 1).toFixed(3));
+        f.style.setProperty('--ty', clamp(py * 1.2, -1, 1).toFixed(3));
+      }
+    });
+    fwStage.addEventListener('pointerleave', () => {
+      if (fwLayer) fwLayer.style.translate = '';
+      if (current >= 0) { fwFrames[current].style.removeProperty('--tx'); fwFrames[current].style.removeProperty('--ty'); }
+    });
+
+    // Drag: zoomed = swipe to the next frame; wall view = slide along the wall if it's wider than the box.
+    fwStage.addEventListener('pointerdown', e => {
+      if (e.target.closest('.fw-zoom-ui button')) return;
+      startX = e.clientX; startPan = panX; moved = false;
+    });
+    window.addEventListener('pointermove', e => {
+      if (startX === null) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 8) moved = true;
+      if (moved && current < 0 && fwRoom.clientWidth > fwStage.clientWidth + 1) {
+        fwStage.classList.add('is-panning');
+        panX = startPan + dx; camera();
+      }
+    });
+    const endDrag = e => {
+      if (startX === null) return;
+      const dx = (e.clientX ?? startX) - startX; startX = null;
+      fwStage.classList.remove('is-panning');
+      if (current >= 0 && Math.abs(dx) > 45) zoomTo(current + (dx < 0 ? 1 : -1));
+      setTimeout(() => { moved = false; }, 0);
+    };
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('pointercancel', endDrag);
+
+    layout();
+    render();
+  }
+
   // Open mailto links in Gmail compose (desktop only; phones keep the default mail app)
   const desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   document.querySelectorAll('a[href^="mailto:"]').forEach(link => {
@@ -197,102 +374,6 @@
       window.open(`https://mail.google.com/mail/?${params}`, '_blank', 'noopener');
     });
   });
-
-  // ===== Floating panels (Frames / Packages) =====
-  // One reusable controller for every `.gps-modal[data-modal="name"]`.
-  // Open with [data-open-modal="name"], close with [data-close-modal], backdrop click or Escape.
-  const modals = {};
-  document.querySelectorAll('.gps-modal').forEach(m => { modals[m.dataset.modal] = m; });
-  if (Object.keys(modals).length) {
-    const pageParts = ['.site-header', 'main', '.site-footer'].map(s => document.querySelector(s)).filter(Boolean);
-    const FOCUSABLE = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
-    let activeModal = null;
-    let lastFocus = null;
-
-    const lockScroll = () => {
-      const bar = window.innerWidth - root.clientWidth;
-      document.body.style.overflow = 'hidden';
-      if (bar > 0) document.body.style.paddingRight = bar + 'px';
-    };
-    const unlockScroll = () => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-    };
-    const setBackground = hidden => pageParts.forEach(el => {
-      if (hidden) el.setAttribute('inert', ''); else el.removeAttribute('inert');
-    });
-
-    function openModal(name, trigger) {
-      const next = modals[name];
-      if (!next || next === activeModal) return;
-      if (activeModal) {
-        // Switching panels: keep the page locked, just swap the visible panel.
-        activeModal.classList.remove('is-open');
-        activeModal.setAttribute('aria-hidden', 'true');
-      } else {
-        lastFocus = trigger || document.activeElement;
-        lockScroll();
-        setBackground(true);
-        closeMenu();
-      }
-      activeModal = next;
-      next.removeAttribute('aria-hidden');
-      next.classList.add('is-open');
-      const body = next.querySelector('.gps-modal__body');
-      if (body) body.scrollTop = 0;
-      next.querySelector('.gps-modal__close')?.focus({ preventScroll: true });
-    }
-
-    function closeModal() {
-      if (!activeModal) return;
-      activeModal.classList.remove('is-open');
-      activeModal.setAttribute('aria-hidden', 'true');
-      activeModal = null;
-      setBackground(false);
-      unlockScroll();
-      if (lastFocus && lastFocus.focus) {
-        lastFocus.focus({ preventScroll: true });
-        // The trigger may sit inside the (closed) mobile menu; fall back to the hamburger.
-        if (document.activeElement !== lastFocus) menuButton?.focus({ preventScroll: true });
-      }
-      lastFocus = null;
-    }
-
-    document.querySelectorAll('[data-open-modal]').forEach(el => el.addEventListener('click', event => {
-      event.preventDefault(); // keep the URL and the landing page position unchanged
-      openModal(el.dataset.openModal, el);
-    }));
-    document.querySelectorAll('[data-close-modal]').forEach(el => el.addEventListener('click', closeModal));
-
-    // Backdrop click closes; clicks (or text-selection drags) that start inside the panel do not.
-    Object.values(modals).forEach(modal => {
-      let downOnBackdrop = false;
-      modal.addEventListener('pointerdown', event => { downOnBackdrop = event.target === modal; });
-      modal.addEventListener('click', event => {
-        if (downOnBackdrop && event.target === modal) closeModal();
-        downOnBackdrop = false;
-      });
-    });
-
-    document.addEventListener('keydown', event => {
-      if (!activeModal) return;
-      if (event.key === 'Escape') { event.preventDefault(); closeModal(); return; }
-      if (event.key !== 'Tab') return;
-      // Focus trap: keep Tab cycling inside the open panel.
-      const items = [...activeModal.querySelectorAll(FOCUSABLE)].filter(el => el.offsetParent !== null);
-      if (!items.length) return;
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (!activeModal.contains(document.activeElement)) { event.preventDefault(); first.focus(); }
-      else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-    });
-
-    // Hide broken preview images instead of showing the browser's broken-image icon.
-    document.querySelectorAll('.gps-modal img').forEach(img => {
-      img.addEventListener('error', () => { img.style.visibility = 'hidden'; }, { once: true });
-    });
-  }
 
   const year = document.querySelector('#year');
   if (year) year.textContent = new Date().getFullYear();

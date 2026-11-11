@@ -6,7 +6,19 @@
   <meta name="theme-color" content="#050505">
   <meta name="description" content="Professional graduation photography that captures your hard work, journey, and the next chapter of your story. Grad Pro Studios Photography Inc.">
   <title>Grad Pro Studios Photography Inc.</title>
-  <link rel="icon" type="image/png" href="assets/GPS.png">
+  <link rel="canonical" href="https://mainpage-rust.vercel.app/">
+  <link rel="icon" type="image/png" sizes="32x32" href="web/favicon-32.png">
+  <link rel="apple-touch-icon" href="web/logo.png">
+  <!-- Link previews (Facebook, Messenger, etc.). Change the URLs if the main domain changes. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Grad Pro Studios Photography Inc.">
+  <meta property="og:title" content="Grad Pro Studios — Your Milestone, Our Focus.">
+  <meta property="og:description" content="Graduation Na, Grad Pro Na! Professional graduation photos that capture your hard work, journey, and the next chapter of your story.">
+  <meta property="og:url" content="https://mainpage-rust.vercel.app/">
+  <meta property="og:image" content="https://mainpage-rust.vercel.app/web/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,10 +36,17 @@
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="#home" aria-label="Grad Pro Studios home"><img class="logo-dark" src="web/logo-dark.png" alt="Grad Pro Studios logo"><img class="logo-light" src="web/logo.png" alt="Grad Pro Studios logo"></a>
+      <a class="brand" href="#home" aria-label="Grad Pro Studios home"><img class="logo-dark" src="web/logo-dark.png" width="360" height="159" alt="Grad Pro Studios logo"><img class="logo-light" src="web/logo.png" width="168" height="74" alt="Grad Pro Studios logo"></a>
+      <!-- Student Login: replace [PORTAL URL] with the real student portal address -->
+      <a class="login-btn" href="[PORTAL URL]">Student Login</a>
       <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav"><span></span><span></span><span></span></button>
       <nav class="nav" id="primary-nav" aria-label="Main navigation">
-        <a class="nav-link active" href="#home">Home</a><a class="nav-link" href="#frames" data-open-modal="frames" aria-haspopup="dialog">Frames</a><a class="nav-link" href="#packages" data-open-modal="packages" aria-haspopup="dialog">Packages</a><a class="nav-link" href="#about">About Us</a>
+        <a class="nav-link active" href="#home">Home</a>
+        <a class="nav-link" href="#how-it-works">How It Works</a>
+        <a class="nav-link" href="#packages">Packages</a>
+        <a class="nav-link" href="#for-schools">For Schools</a>
+        <a class="nav-link" href="#about">About</a>
+        <a class="nav-link" href="#faq">FAQ</a>
         </nav>
     </div>
   </header>
@@ -47,94 +66,270 @@
         <div class="carousel-shell" id="graduation-carousel" role="region" aria-roledescription="carousel" aria-label="Graduation portraits">
           <div class="carousel-viewport" id="carousel-viewport" tabindex="0" aria-label="Use left and right arrow keys to browse portraits">
             <div class="portrait-gallery" id="portrait-gallery">
-              <figure class="portrait" data-slide="0"><img src="web/carousel-01.webp" alt="Graduation portrait 1" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="1"><img src="web/carousel-02.webp" alt="Graduation portrait 2" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="2"><img src="web/carousel-03.webp" alt="Graduation portrait 3" loading="eager" fetchpriority="high" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="3"><img src="web/carousel-04.webp" alt="Graduation portrait 4" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="4"><img src="web/carousel-05.webp" alt="Graduation portrait 5" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="5"><img src="web/carousel-06.webp" alt="Graduation portrait 6" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="6"><img src="web/carousel-07.webp" alt="Graduation portrait 7" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="7"><img src="web/carousel-08.webp" alt="Graduation portrait 8" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="8"><img src="web/carousel-09.webp" alt="Graduation portrait 9" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="9"><img src="web/carousel-10.webp" alt="Graduation portrait 10" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="10"><img src="web/carousel-11.webp" alt="Graduation portrait 11" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="11"><img src="web/carousel-12.webp" alt="Graduation portrait 12" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="12"><img src="web/carousel-13.webp" alt="Graduation portrait 13" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="13"><img src="web/carousel-14.webp" alt="Graduation portrait 14" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="0"><img src="web/carousel-01.webp" alt="Grad Pro Studios graduation portrait 01 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="1"><img src="web/carousel-02.webp" alt="Grad Pro Studios graduation portrait 02 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="2"><img src="web/carousel-03.webp" alt="Grad Pro Studios graduation portrait 03 — [DESCRIBE: attire, school, pose]" loading="eager" fetchpriority="high" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="3"><img src="web/carousel-04.webp" alt="Grad Pro Studios graduation portrait 04 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="4"><img src="web/carousel-05.webp" alt="Grad Pro Studios graduation portrait 05 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="5"><img src="web/carousel-06.webp" alt="Grad Pro Studios graduation portrait 06 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="6"><img src="web/carousel-07.webp" alt="Grad Pro Studios graduation portrait 07 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="7"><img src="web/carousel-08.webp" alt="Grad Pro Studios graduation portrait 08 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="8"><img src="web/carousel-09.webp" alt="Grad Pro Studios graduation portrait 09 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="9"><img src="web/carousel-10.jpg" alt="Grad Pro Studios graduation portrait 10 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="10"><img src="web/carousel-11.webp" alt="Grad Pro Studios graduation portrait 11 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="11"><img src="web/carousel-12.webp" alt="Grad Pro Studios graduation portrait 12 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="12"><img src="web/carousel-13.webp" alt="Grad Pro Studios graduation portrait 13 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="13"><img src="web/carousel-14.webp" alt="Grad Pro Studios graduation portrait 14 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
               </div>
           </div>
         </div>
-        <div class="carousel-pagination" id="carousel-pagination" role="group" aria-label="Choose graduation portrait">
-          <button type="button" class="carousel-dot is-active" aria-label="Go to portrait 1" aria-current="true"></button>
-          <button type="button" class="carousel-dot" aria-label="Go to portrait 2"></button>
-          <button type="button" class="carousel-dot" aria-label="Go to portrait 3"></button>
-          <button type="button" class="carousel-dot" aria-label="Go to portrait 4"></button>
-          <button type="button" class="carousel-dot" aria-label="Go to portrait 5"></button>
-          <button type="button" class="carousel-dot" aria-label="Go to portrait 6"></button>
-          <button type="button" class="carousel-dot" aria-label="Go to portrait 7"></button>
-        </div>
-        <div class="gallery-controls"><span>SWIPE OR TAP A PHOTO TO EXPLORE</span><span class="carousel-count" id="carousel-count" aria-live="polite">03 / 07</span></div>
+        <!-- Dots and counter are generated by script.js from the number of slides -->
+        <div class="carousel-pagination" id="carousel-pagination" role="group" aria-label="Choose graduation portrait"></div>
+        <div class="gallery-controls"><span>SWIPE OR TAP A PHOTO TO EXPLORE</span><span class="carousel-count" id="carousel-count" aria-live="polite"></span></div>
       </div>
     </section>
 
-    <section class="features" id="about" aria-label="Why choose Grad Pro Studios">
+    <!-- Stats: from the company profile -->
+    <section class="stats" aria-label="Grad Pro Studios in numbers">
+      <div class="stat"><strong>21</strong><span>Years in yearbook photography</span></div>
+      <div class="stat"><strong>5</strong><span>Branches in Mindanao &amp; Visayas</span></div>
+      <div class="stat"><strong>100+</strong><span>Skilled professionals</span></div>
+      <div class="stat"><strong>1,000+</strong><span>sq. m of studio space</span></div>
+    </section>
+
+    <section class="features" aria-label="Why choose Grad Pro Studios">
       <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/></svg></div><div><h2>Professional Quality</h2><p>High-resolution photos with expert editing for timeless memories.</p></div></article>
       <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11v5c3.5 3 8.5 3 12 0v-5M22 9v6"/></svg></div><div><h2>Various Packages</h2><p>Flexible options for individuals, families, and groups.</p></div></article>
-      <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg></div><div><h2>Trusted by Graduates</h2><p>Serving schools and universities with dedication and professionalism.</p></div></article>
+      <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg></div><div><h2>Trusted by Schools</h2><p>Trusted by schools, colleges, and universities all over Mindanao and Visayas.</p></div></article>
     </section>
 
-    <section class="packages" id="packages"><div><p class="eyebrow"><span></span> Your moment, your way</p><h2>Find the package<br><em>that fits your story.</em></h2></div><a class="cta cta-outline" href="mailto:admin@gradprostudios.com?subject=Graduation%20Photography%20Packages">Ask About Packages <span aria-hidden="true">↗</span></a></section>
+    <!-- Packages: 2025–26 walk-in price list (Grad-Pro-Studios-2025-26-Walk-in-Packages.pdf) -->
+    <section class="pricing" id="packages" aria-labelledby="pricing-title">
+      <p class="eyebrow"><span></span> Walk-in packages 2025–26</p>
+      <h2 class="section-title" id="pricing-title">Find the package <em>that fits your story.</em></h2>
+      <div class="price-list">
+        <article class="price-card">
+          <h3>Basic Package</h3>
+          <p class="price"><strong>₱750</strong> per graduate</p>
+          <ul class="price-includes"><li>Toga shot</li><li>1 copy 8R</li><li>2 copies 3R, 4 copies 2R</li><li>Soft copy of all unedited (RAW) and edited photos</li><li>5 free shots with family, friends or relatives</li></ul>
+        </article>
+        <article class="price-card">
+          <h3>Framed Package</h3>
+          <p class="price"><strong>₱1,100</strong> per graduate</p>
+          <ul class="price-includes"><li>Toga shot</li><li>1 copy 8R in a floating frame</li><li>2 copies 3R, 4 copies 2R</li><li>Soft copy of all unedited (RAW) and edited photos</li><li>5 free shots with family, friends or relatives</li></ul>
+          <a class="price-link" href="#frame-styles">See the frame ↓</a>
+        </article>
+        <article class="price-card">
+          <h3>Platinum Package</h3>
+          <p class="price"><strong>₱1,400</strong> per graduate</p>
+          <ul class="price-includes"><li>Toga shot</li><li>1 copy 8R with your name and school logo on a glass floating frame</li><li>2 copies 3R, 4 copies 2R, 5 copies 2×2, 10 copies 1×1</li><li>Soft copy of all unedited (RAW) and edited photos</li><li>5 free shots with family, friends or relatives</li></ul>
+          <a class="price-link" href="#frame-styles">See the frame ↓</a>
+        </article>
+        <article class="price-card">
+          <h3>11×14 Package</h3>
+          <p class="price"><strong>₱1,600</strong> per graduate</p>
+          <ul class="price-includes"><li>Toga shot</li><li>1 copy 11×14 on a glass floating frame</li><li>2 copies 3R, 4 copies 2R, 5 copies 2×2, 10 copies 1×1</li><li>Soft copy of all unedited (RAW) and edited photos</li><li>5 free shots with family, friends or relatives</li></ul>
+          <a class="price-link" href="#frame-styles">See the frame ↓</a>
+        </article>
+      </div>
+      <p class="price-note">Standard walk-in prices (up to 4 shots). Customized and discounted packages are available for groups of 100 students and above. <a href="#for-schools">For schools →</a></p>
+
+      <div class="addons">
+        <div class="addon-group">
+          <h3>Extra shot</h3>
+          <dl>
+            <div><dt>1 more shot in a different attire (3 poses)<small>2 copies 3R, 4 copies 2R + soft copy, RAW and edited</small></dt><dd>₱250</dd></div>
+          </dl>
+        </div>
+        <div class="addon-group">
+          <h3>Hair &amp; makeup</h3>
+          <dl class="addon-2col">
+            <div class="addon-head"><dt></dt><dd>Pre-booked</dd><dd>Walk-in</dd></div>
+            <div><dt>Makeup</dt><dd>₱300</dd><dd>₱400</dd></div>
+            <div><dt>Hair</dt><dd>₱300</dd><dd>₱400</dd></div>
+            <div><dt>Hair and makeup</dt><dd>₱550</dd><dd>₱750</dd></div>
+          </dl>
+        </div>
+        <div class="addon-group">
+          <h3>Add a frame</h3>
+          <dl>
+            <div><dt>8R photo with floating frame</dt><dd>₱690</dd></div>
+            <div><dt>8R photo with Platinum frame</dt><dd>₱890</dd></div>
+            <div><dt>11×14 photo with floating frame</dt><dd>₱1,090</dd></div>
+            <div><dt>Package photos with Ultimate frame</dt><dd>₱1,290</dd></div>
+          </dl>
+          <a class="price-link" href="#frame-styles">See all frame styles ↓</a>
+        </div>
+      </div>
+      <p class="price-note">Book a schedule by calling your <a href="#branches">preferred studio location</a>. All prices are subject to change without prior notice.</p>
+
+      <div class="pricing-actions">
+        <a class="cta" href="https://m.me/gradprostudios" target="_blank" rel="noopener noreferrer">Message us on Facebook <span aria-hidden="true">↗</span></a>
+        <a class="cta cta-outline" href="mailto:admin@gradprostudios.com?subject=Graduation%20Photography%20Packages">Ask About Packages <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
+    <!-- Frame styles: our frames hanging on a wall. Tap a frame to zoom in.
+         Edit each frame's data-name / data-desc / data-size / data-price below.
+         --x/--y/--fw = desktop position + width (% of the wide room), --mx/--my/--mfw = same on phones (% of the tall room),
+         --l/--t/--w/--h = the glass area inside that frame image (for the sun glare). -->
+    <section class="frame-wall" id="frame-styles" aria-labelledby="frames-title">
+      <p class="eyebrow"><span></span> Frame styles</p>
+      <h2 class="section-title" id="frames-title">See it on <em>your wall.</em></h2>
+      <div class="fw-stage" id="fw-stage" aria-label="Room with our frame styles on the wall">
+        <div class="fw-room" id="fw-room">
+          <picture>
+            <source media="(max-width:760px)" srcset="web/frames/room-mobile.webp" width="941" height="1672">
+            <img class="fw-photo" src="web/frames/room.webp" width="1672" height="941" alt="" loading="lazy" draggable="false">
+          </picture>
+          <div class="fw-layer" id="fw-layer">
+            <button class="fw-frame" type="button" style="--x:12.62%;--y:13.82%;--fw:13.22%;--ar:1400/1704;--mx:24.65%;--my:23.62%;--mfw:19.66%"
+              data-name="11x14 Floating Frame" data-desc="One graduation portrait in a clean black frame. Simple, timeless, fits any wall." data-size="11 × 14 in" data-price="₱1,090">
+              <span class="fw-art" style="--l:4.07%;--t:3.23%;--w:91.79%;--h:93.25%;--src:url(web/frames/frame-01.webp)">
+                <img src="web/frames/frame-01.webp" width="822" height="1000" alt="Classic 11×14 frame" loading="lazy" draggable="false"><span class="fw-sun"></span>
+              </span>
+            </button>
+            <button class="fw-frame" type="button" style="--x:29.67%;--y:7.23%;--fw:10.11%;--ar:1672/2152;--mx:32.09%;--my:39.17%;--mfw:15.94%"
+              data-name="Platinum Floating Frame" data-desc="Your 8R portrait with your name and school logo on a glass floating frame." data-size="8R (8 × 10 in)" data-price="₱890">
+              <span class="fw-art" style="--l:3.41%;--t:2.65%;--w:93.06%;--h:94.75%;--src:url(web/frames/frame-02.webp)">
+                <img src="web/frames/frame-02.webp" width="777" height="1000" alt="Nameplate frame" loading="lazy" draggable="false"><span class="fw-sun"></span>
+              </span>
+            </button>
+            <button class="fw-frame" type="button" style="--x:29.67%;--y:31.56%;--fw:10.11%;--ar:1397/1690;--mx:51.86%;--my:39.17%;--mfw:15.94%"
+              data-name="8x10 Floating Frame" data-desc="A single portrait in a smaller black frame. Perfect for a desk, shelf or a cozy wall." data-size="8R (8 × 10 in)" data-price="₱690">
+              <span class="fw-art" style="--l:3.72%;--t:3.02%;--w:92.05%;--h:94.20%;--src:url(web/frames/frame-05.webp)">
+                <img src="web/frames/frame-05.webp" width="827" height="1000" alt="Classic 8×10 frame" loading="lazy" draggable="false"><span class="fw-sun"></span>
+              </span>
+            </button>
+            <button class="fw-frame" type="button" style="--x:43.60%;--y:14.98%;--fw:14.35%;--ar:1927/1704;--mx:48.14%;--my:23.62%;--mfw:27.10%"
+              data-name="Ultimate Floating Frame" data-desc="Your package photos together: main portrait with your name and course, two creative shots, and your school seal." data-size="(12 × 13 in)" data-price="₱1,290">
+              <span class="fw-art" style="--l:2.91%;--t:3.23%;--w:94.08%;--h:93.31%;--src:url(web/frames/frame-03.webp)">
+                <img src="web/frames/frame-03.webp" width="1000" height="884" alt="Ultimate frame" loading="lazy" draggable="false"><span class="fw-sun"></span>
+              </span>
+            </button>
+            <button class="fw-frame" type="button" style="--x:60.83%;--y:7.23%;--fw:26.20%;--ar:2275/1270;--mx:22.32%;--my:4.19%;--mfw:55.26%"
+              data-name="Ruby Floating Frame" data-desc="Three photos side by side: your toga portrait in the middle, creative shots and school logos on each side." data-size="(14 x 24 in)" data-price="₱1,590">
+              <span class="fw-art" style="--l:2.55%;--t:4.49%;--w:94.90%;--h:90.94%;--src:url(web/frames/frame-04.webp)">
+                <img src="web/frames/frame-04.webp" width="1000" height="558" alt="Ruby frame" loading="lazy" draggable="false"><span class="fw-sun"></span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <p class="fw-hint" aria-hidden="true">👆 <b>Tap a frame</b> to look closer</p>
+        <div class="fw-zoom-ui">
+          <button class="fw-back" id="fw-back" type="button">← Back to wall</button>
+          <button class="fw-nav fw-nav--prev" id="fw-prev" type="button" aria-label="Previous frame">‹</button>
+          <button class="fw-nav fw-nav--next" id="fw-next" type="button" aria-label="Next frame">›</button>
+          <p class="fw-label" aria-live="polite"><small id="fw-zoom-count"></small><strong id="fw-zoom-name"></strong></p>
+        </div>
+      </div>
+
+      <div class="fw-panel">
+        <div class="fw-info">
+          <div id="fw-wall-text">
+            <h3 class="fw-title">Which frame is yours?</h3>
+            <p>Tap any frame on the wall, or pick one here, to see it up close.</p>
+          </div>
+          <div id="fw-detail" hidden>
+            <p class="fw-count" id="fw-detail-count"></p>
+            <h3 class="fw-title" id="fw-detail-name"></h3>
+            <p id="fw-detail-desc"></p>
+          </div>
+          <dl class="fw-meta" id="fw-meta" hidden>
+            <div><dt>Size</dt><dd id="fw-size"></dd></div>
+            <div><dt>Add-on price</dt><dd><strong id="fw-price"></strong></dd></div>
+          </dl>
+          <a class="cta" href="https://m.me/gradprostudios" target="_blank" rel="noopener noreferrer">Order a Frame <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="fw-chips" id="fw-chips" aria-label="Choose a frame"></div>
+      </div>
+    </section>
+
+    <!-- For Schools (B2B): from the company profile -->
+    <section class="schools" id="for-schools" aria-labelledby="schools-title">
+      <div>
+        <p class="eyebrow"><span></span> For schools</p>
+        <h2 class="section-title" id="schools-title">Partner with <em>Grad Pro.</em></h2>
+        <p>We offer customized and discounted group packages for kindergartens, schools, colleges, universities and post-graduate institutions. Every graduation portrait package includes soft copies for school submission, with digital backgrounds made to match your yearbook requirements.</p>
+        <ul class="schools-list">
+          <li>Customized, discounted group packages</li>
+          <li>Digital backgrounds matched to your yearbook</li>
+          <li>Enough manpower, dedicated customer service and after-sales support</li>
+        </ul>
+      </div>
+      <a class="cta" href="mailto:admin@gradprostudios.com?subject=School%20Partnership%20Inquiry">Partner With Us <span aria-hidden="true">↗</span></a>
+    </section>
+
+    <!-- Testimonials: PLACEHOLDERS — replace with real quotes (with permission) -->
+    <section class="testimonials" aria-labelledby="testimonials-title">
+      <p class="eyebrow"><span></span> From our graduates</p>
+      <h2 id="testimonials-title">What graduates <em>say.</em></h2>
+      <div class="testimonial-list">
+        <figure class="testimonial">
+          <blockquote>“[TESTIMONIAL QUOTE HERE]”</blockquote>
+          <figcaption><strong>[STUDENT NAME]</strong><span>[COURSE] · [SCHOOL] · [YEAR]</span></figcaption>
+        </figure>
+        <figure class="testimonial">
+          <blockquote>“[TESTIMONIAL QUOTE HERE]”</blockquote>
+          <figcaption><strong>[STUDENT NAME]</strong><span>[COURSE] · [SCHOOL] · [YEAR]</span></figcaption>
+        </figure>
+        <figure class="testimonial">
+          <blockquote>“[TESTIMONIAL QUOTE HERE]”</blockquote>
+          <figcaption><strong>[STUDENT NAME]</strong><span>[COURSE] · [SCHOOL] · [YEAR]</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- About Us: from the company profile -->
+    <section class="about" id="about" aria-labelledby="about-title">
+      <p class="eyebrow"><span></span> About us</p>
+      <h2 class="section-title" id="about-title">Grad Pro <em>Studios.</em></h2>
+      <p>Grad Pro Studios Photography Inc. has been in the yearbook photography industry for 21 years. It is currently the largest company in the field, operating four branches in Mindanao (Davao, Cagayan de Oro, General Santos and Zamboanga) and one in the heart of Visayas (Cebu City).</p>
+      <p>Employing over a hundred skilled professionals, with more than 1,000 square meters of space across our five locations, Grad Pro Studios is driven by a highly dynamic management team, ensuring innovation and excellence in our services.</p>
+      <div class="about-mv">
+        <article class="mv-card"><h3>Our Vision</h3><p>To become the leading service provider of digital photography and multimedia solutions for school graduation photography all over the Philippines.</p></article>
+        <article class="mv-card"><h3>Our Mission</h3><p>Grad Pro is dedicated to bringing excellence, quality and utmost customer satisfaction. We are home to motivated individuals with great passion for artistry, integrity and teamwork: an innovative, customer- and people-focused organization that continuously seeks opportunities for growth.</p></article>
+      </div>
+      <h3 class="about-sub">Our services &amp; facilities</h3>
+      <ul class="service-list">
+        <li>Hassle-free service</li>
+        <li>Student-friendly service</li>
+        <li>Affordable packages for graduating students</li>
+        <li>Affordable hair and makeup services</li>
+        <li>Our own framing department</li>
+        <li>Excellent printing press partnership</li>
+        <li>Enough manpower to serve clients</li>
+        <li>Dedicated customer service</li>
+        <li>Excellent after-sales service</li>
+      </ul>
+    </section>
+
+    <!-- Branches: from the company profile; Cebu City from the 2025–26 walk-in price list. -->
+    <section class="branches" id="branches" aria-labelledby="branches-title">
+      <p class="eyebrow"><span></span> Our branches</p>
+      <h2 class="section-title" id="branches-title">Visit us <em>near you.</em></h2>
+      <div class="branch-list">
+        <article class="branch"><h3>Davao City</h3><p>#14 Vinzon Street (fronting G-Mall HR Warehouse), Barrio Obrero, Davao City</p><a href="tel:+63823217359">(082) 321-7359</a></article>
+        <article class="branch"><h3>Cagayan de Oro City</h3><p>2nd Floor, GML Building (beside Aim to Top), Corrales Ext., Cagayan de Oro City</p><a href="tel:+63883237297">(088) 323-7297</a></article>
+        <article class="branch"><h3>General Santos City</h3><p>2nd Floor, CSA Bldg. (fronting Net Central), Balimbing Street, General Santos City</p><a href="tel:+63833055341">(083) 305-5341</a></article>
+        <article class="branch"><h3>Zamboanga City</h3><p>3rd Floor, QNS Building, Veterans Avenue Ext. / Tumaga Road, Zamboanga City</p><a href="tel:+63623087359">(062) 308-7359</a></article>
+        <article class="branch"><h3>Cebu City</h3><p>510 Main Road Entrance, Doña Esperanza, Tisa, Cebu City</p><a href="tel:+63324013493">(032) 401-3493</a></article>
+      </div>
+    </section>
+
+    <!-- FAQ: answers are PLACEHOLDERS except where the brief already gave the answer -->
+    <section class="faq" id="faq" aria-labelledby="faq-title">
+      <p class="eyebrow"><span></span> FAQ</p>
+      <h2 class="section-title" id="faq-title">Questions, <em>answered.</em></h2>
+      <details class="faq-item"><summary>What should I wear on pictorial day?</summary><p>[WHAT TO WEAR — attire, toga, grooming tips]</p></details>
+      <details class="faq-item"><summary>When will my photos be released?</summary><p>[RELEASE TIME — e.g. how many days/weeks after pictorial]</p></details>
+      <details class="faq-item"><summary>Can I reschedule my pictorial?</summary><p>[RESCHEDULE POLICY]</p></details>
+      <details class="faq-item"><summary>Do you offer hair and makeup?</summary><p>Yes. Makeup or hair is ₱300 each when pre-booked (₱400 walk-in). Hair and makeup together is ₱550 pre-booked (₱750 walk-in). Book ahead with your <a href="#branches">studio</a> to get the lower price.</p></details>
+      <details class="faq-item"><summary>Can I get my photo framed?</summary><p>Yes. We have our own framing department. See our <a href="#frame-styles">frame styles</a> or message us on <a href="https://m.me/gradprostudios" target="_blank" rel="noopener noreferrer">Messenger</a> to order.</p></details>
+      <details class="faq-item"><summary>Where do I get my photos?</summary><p>Your photos are released through the student portal or Google Drive. [ADD DETAILS]</p></details>
+    </section>
   </main>
 
-  <!-- ===== Floating panels: Frames & Packages (opened from the nav) ===== -->
-  <div class="gps-modal" data-modal="frames" id="modal-frames" aria-hidden="true">
-    <div class="gps-modal__panel" role="dialog" aria-modal="true" aria-labelledby="frames-title">
-      <div class="gps-modal__bar">
-        <div class="gps-modal__tabs" role="group" aria-label="Switch panel">
-          <button type="button" class="gps-modal__tab" data-open-modal="frames" aria-current="true">Frames</button>
-          <button type="button" class="gps-modal__tab" data-open-modal="packages">Packages</button>
-        </div>
-        <button type="button" class="gps-modal__close" data-close-modal aria-label="Close Frames panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-      </div>
-      <div class="gps-modal__body" tabindex="0">
-        <!-- Frames page is not live yet; the old frame list is saved in _backup/index.before-frames-notice.html -->
-        <section class="soon-notice">
-          <div class="soon-notice__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><rect x="7.5" y="6.5" width="9" height="11"/><path d="M12 1.5v1.5"/></svg></div>
-          <p class="eyebrow"><span></span> Frames <span></span></p>
-          <h2 id="frames-title">Coming <em>Soon</em></h2>
-          <p class="soon-notice__text">Our Frames page is still under construction and not available online yet. To order a frame, just send us a message on our Facebook page and we'll help you pick the right one.</p>
-          <div class="soon-notice__actions">
-            <a class="cta" href="https://m.me/gradprostudios" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5C6.6 2.5 2.5 6.4 2.5 11.6c0 2.9 1.3 5.4 3.4 7.1v3.4l3.2-1.8c.9.3 1.9.4 2.9.4 5.4 0 9.5-3.9 9.5-9.1S17.4 2.5 12 2.5Zm1 12.1-2.4-2.6-4.7 2.6 5.2-5.5 2.5 2.6 4.6-2.6-5.2 5.5Z"/></svg>Message us on Facebook</a>
-          </div>
-        </section>
-      </div>
-    </div>
-  </div>
-
-  <div class="gps-modal" data-modal="packages" id="modal-packages" aria-hidden="true">
-    <div class="gps-modal__panel" role="dialog" aria-modal="true" aria-labelledby="packages-title">
-      <div class="gps-modal__bar">
-        <div class="gps-modal__tabs" role="group" aria-label="Switch panel">
-          <button type="button" class="gps-modal__tab" data-open-modal="frames">Frames</button>
-          <button type="button" class="gps-modal__tab" data-open-modal="packages" aria-current="true">Packages</button>
-        </div>
-        <button type="button" class="gps-modal__close" data-close-modal aria-label="Close Packages panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-      </div>
-      <div class="gps-modal__body" tabindex="0">
-        <!-- Packages page is not live yet; the old package list is saved in _backup/index.before-packages-notice.html -->
-        <section class="soon-notice">
-          <div class="soon-notice__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8l9 5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
-          <p class="eyebrow"><span></span> Packages <span></span></p>
-          <h2 id="packages-title">Coming <em>Soon</em></h2>
-          <p class="soon-notice__text">Our Packages page is still under construction and not available online yet. To ask about packages, just send us a message on our Facebook page and we'll help you find the one that fits.</p>
-          <div class="soon-notice__actions">
-            <a class="cta" href="https://m.me/gradprostudios" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5C6.6 2.5 2.5 6.4 2.5 11.6c0 2.9 1.3 5.4 3.4 7.1v3.4l3.2-1.8c.9.3 1.9.4 2.9.4 5.4 0 9.5-3.9 9.5-9.1S17.4 2.5 12 2.5Zm1 12.1-2.4-2.6-4.7 2.6 5.2-5.5 2.5 2.6 4.6-2.6-5.2 5.5Z"/></svg>Message us on Facebook</a>
-          </div>
-        </section>
-      </div>
-    </div>
-  </div>
-
-  <footer class="site-footer"><a class="footer-brand" href="#home">GRAD PRO <b>STUDIOS</b></a><a href="mailto:admin@gradprostudios.com">admin@gradprostudios.com</a><div class="footer-socials"><a href="https://www.facebook.com/gradprostudios" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3 0-5 2-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.7.3-1 1-1Z"/></svg><span>Facebook</span></a></div><span class="copyright">© <span id="year"></span> Grad Pro Studios Photography Inc.</span></footer><script src="script.js"></script>
+  <footer class="site-footer"><a class="footer-brand" href="#home">GRAD PRO <b>STUDIOS</b></a><a href="mailto:admin@gradprostudios.com">admin@gradprostudios.com</a><a href="mailto:gradprostudios@gmail.com">gradprostudios@gmail.com</a><a href="tel:+63822210011">Main office (082) 221-00-11</a><a href="#branches">Our branches</a><div class="footer-socials"><a href="https://www.facebook.com/gradprostudios" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3 0-5 2-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.7.3-1 1-1Z"/></svg><span>Facebook</span></a></div><span class="copyright">© <span id="year">2026</span> Grad Pro Studios Photography Inc.</span></footer><script src="script.js"></script>
 </body>
 </html>
