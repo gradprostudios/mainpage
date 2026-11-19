@@ -197,7 +197,7 @@
     const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
     let current = -1;   // -1 = whole wall
     let panX = null;    // sideways slide when the room is wider than the box
-    let startX = null, startPan = 0, moved = false;
+    let startX = null, startY = 0, lastX = 0, lastY = 0, startPan = 0, moved = false;
 
     const chips = fwFrames.map((frame, i) => {
       const chip = document.createElement('button');
@@ -302,7 +302,7 @@
       current = -1; render();
     }
 
-    fwFrames.forEach((f, i) => f.addEventListener('click', () => { if (current < 0 && !moved) zoomTo(i); }));
+    fwFrames.forEach((f, i) => f.addEventListener('click', () => { if (current < 0 && !moved) { askGyro(); zoomTo(i); } }));
     byId('fw-back')?.addEventListener('click', backToWall);
     byId('fw-prev')?.addEventListener('click', () => zoomTo(current - 1));
     byId('fw-next')?.addEventListener('click', () => zoomTo(current + 1));
@@ -316,13 +316,12 @@
     window.matchMedia('(max-width:760px)').addEventListener?.('change', () => { panX = null; layout(); });
     fwRoom.querySelector('.fw-photo')?.addEventListener('load', layout);
 
-    // Mouse depth: frames drift a little against the room; zoomed in, the frame tilts toward the pointer.
+    // Zoomed in: the glare on the glass follows the pointer. The frame itself stays still.
     fwStage.addEventListener('pointermove', e => {
       if (e.pointerType !== 'mouse' || startX !== null) return;
       const r = fwStage.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width * 2 - 1, py = (e.clientY - r.top) / r.height * 2 - 1;
-      if (current < 0) { if (fwLayer) fwLayer.style.translate = `${px * -4}px ${py * -3}px`; }
-      else {
+      if (current >= 0) {
         const f = fwFrames[current];
         f.style.setProperty('--tx', clamp(px * 1.2, -1, 1).toFixed(3));
         f.style.setProperty('--ty', clamp(py * 1.2, -1, 1).toFixed(3));
@@ -333,15 +332,42 @@
       if (current >= 0) { fwFrames[current].style.removeProperty('--tx'); fwFrames[current].style.removeProperty('--ty'); }
     });
 
-    // Drag: zoomed = swipe to the next frame; wall view = slide along the wall if it's wider than the box.
+    // Phones/tablets: tilting the device moves the glare on the glass (the frame itself stays still).
+    // iPhone/iPad only allow motion access after a tap, so we ask the first time a frame is tapped.
+    let gyroOn = false, gyroBase = null;
+    const touchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    function startGyro() {
+      if (gyroOn) return;
+      gyroOn = true;
+      window.addEventListener('deviceorientation', e => {
+        if (current < 0 || e.gamma == null || e.beta == null) { gyroBase = null; return; }
+        if (gyroBase === null) gyroBase = e.beta; // how the phone is held when the frame opens = centre
+        const f = fwFrames[current];
+        f.style.setProperty('--tx', clamp(e.gamma / 25, -1, 1).toFixed(3));
+        f.style.setProperty('--ty', clamp((e.beta - gyroBase) / 25, -1, 1).toFixed(3));
+      });
+    }
+    function askGyro() {
+      if (!touchDevice || gyroOn || !('DeviceOrientationEvent' in window)) return;
+      const ask = DeviceOrientationEvent.requestPermission;
+      if (typeof ask === 'function') ask.call(DeviceOrientationEvent).then(r => { if (r === 'granted') startGyro(); }).catch(() => {});
+      else startGyro();
+    }
+    fwFrames.forEach(f => f.addEventListener('click', () => { gyroBase = null; }));
+    byId('fw-back')?.addEventListener('click', () => { gyroBase = null; });
+
+    // Drag: zoomed = swipe left/right to the next frame; wall view = slide along the wall if it's wider than the box.
+    // Only a mostly sideways swipe counts, so scrolling the page up or down never changes the frame.
+    const sideways = (dx, dy) => Math.abs(dx) > Math.abs(dy) * 1.5;
     fwStage.addEventListener('pointerdown', e => {
       if (e.target.closest('.fw-zoom-ui button')) return;
-      startX = e.clientX; startPan = panX; moved = false;
+      startX = lastX = e.clientX; startY = lastY = e.clientY; startPan = panX; moved = false;
     });
     window.addEventListener('pointermove', e => {
       if (startX === null) return;
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 8) moved = true;
+      lastX = e.clientX; lastY = e.clientY;
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      if (Math.abs(dx) > 8 && sideways(dx, dy)) moved = true;
       if (moved && current < 0 && fwRoom.clientWidth > fwStage.clientWidth + 1) {
         fwStage.classList.add('is-panning');
         panX = startPan + dx; camera();
@@ -349,9 +375,11 @@
     });
     const endDrag = e => {
       if (startX === null) return;
-      const dx = (e.clientX ?? startX) - startX; startX = null;
+      if (e.type === 'pointerup') { lastX = e.clientX; lastY = e.clientY; }
+      // pointercancel = the browser took over to scroll the page: never a swipe.
+      const dx = lastX - startX, dy = lastY - startY; startX = null;
       fwStage.classList.remove('is-panning');
-      if (current >= 0 && Math.abs(dx) > 45) zoomTo(current + (dx < 0 ? 1 : -1));
+      if (e.type === 'pointerup' && current >= 0 && Math.abs(dx) > 45 && sideways(dx, dy)) zoomTo(current + (dx < 0 ? 1 : -1));
       setTimeout(() => { moved = false; }, 0);
     };
     window.addEventListener('pointerup', endDrag);

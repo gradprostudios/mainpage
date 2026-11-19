@@ -415,8 +415,7 @@ button{font:inherit}
 .fw-layer{position:absolute;inset:0;transition:translate .4s ease-out;perspective:1200px}
 
 .fw-frame{position:absolute;left:var(--x);top:var(--y);width:var(--fw);aspect-ratio:var(--ar);padding:0;border:0;background:none;cursor:zoom-in;
-  transform-style:preserve-3d;transition:transform .35s ease,filter .6s ease;
-  transform:rotateX(calc(var(--ty,0) * -10deg)) rotateY(calc(var(--tx,0) * 14deg))}
+  transition:transform .35s ease,filter .6s ease}
 .fw-frame:hover,.fw-frame:focus-visible{transform:translateY(-1.5%) scale(1.03);outline:none}
 .fw-frame:focus-visible .fw-art{outline:2px solid var(--gold);outline-offset:4px}
 .fw-stage.is-zoomed .fw-frame{cursor:default}
