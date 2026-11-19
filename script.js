@@ -293,6 +293,7 @@
       }
       if (fwLayer) fwLayer.style.translate = '';
       camera();
+      roomParallax();
     }
     function zoomTo(i) { current = ((i % fwFrames.length) + fwFrames.length) % fwFrames.length; render(); }
     function backToWall() {
@@ -385,8 +386,62 @@
     window.addEventListener('pointerup', endDrag);
     window.addEventListener('pointercancel', endDrag);
 
+    // Parallax: on the wall view the room sits a little bigger than its box and drifts as the page scrolls,
+    // like looking through a window into a real room. Zoomed in, it goes back to normal so the camera maths stays exact.
+    const ROOM_ZOOM = 1.08;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    function roomParallax() {
+      if (reduceMotion.matches || current >= 0) { fwRoom.style.scale = ''; fwRoom.style.translate = ''; return; }
+      const r = fwStage.getBoundingClientRect(), vh = window.innerHeight;
+      if (r.bottom < -200 || r.top > vh + 200) return;
+      const p = clamp((r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2), -1, 1); // 1 = below the middle of the screen, -1 = above
+      const extra = (ROOM_ZOOM - 1) / 2;
+      fwRoom.style.scale = String(ROOM_ZOOM);
+      fwRoom.style.translate = `${-extra * fwRoom.clientWidth}px ${(-extra - p * extra) * fwRoom.clientHeight}px`;
+    }
+    let roomTick = false;
+    window.addEventListener('scroll', () => {
+      if (roomTick) return;
+      roomTick = true;
+      requestAnimationFrame(() => { roomTick = false; roomParallax(); });
+    }, { passive: true });
+    window.addEventListener('resize', roomParallax);
+
     layout();
     render();
+  }
+
+  // ===== Parallax on scroll: the hero glow and text drift, section headings float a little =====
+  // Kept small on purpose, and switched off for visitors who turned on "reduce motion".
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const heroEl = document.querySelector('.hero');
+    const glow = document.querySelector('.hero-glow');
+    const heroCopy = document.querySelector('.hero-copy');
+    const floaters = [
+      ...[...document.querySelectorAll('main section:not(.hero) .eyebrow')].map(el => ({ el, f: 0.08 })),
+      ...[...document.querySelectorAll('.section-title, #testimonials-title')].map(el => ({ el, f: 0.05 }))
+    ];
+    floaters.forEach(o => { o.y = 0; });
+    let ticking = false;
+    function parallax() {
+      ticking = false;
+      const y = window.scrollY, vh = window.innerHeight;
+      if (heroEl && y < heroEl.offsetHeight + 200) {
+        if (glow) glow.style.translate = `0 ${y * 0.35}px`;
+        if (heroCopy) heroCopy.style.translate = `0 ${y * 0.12}px`;
+      }
+      floaters.forEach(o => {
+        const r = o.el.getBoundingClientRect();
+        const top = r.top - o.y; // where it would be without the parallax
+        if (top > vh + 100 || top + r.height < -100) return;
+        o.y = Math.max(-28, Math.min(28, (top + r.height / 2 - vh / 2) * o.f));
+        o.el.style.translate = `0 ${o.y.toFixed(1)}px`;
+      });
+    }
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(parallax); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    parallax();
   }
 
   // Open mailto links in Gmail compose (desktop only; phones keep the default mail app)
