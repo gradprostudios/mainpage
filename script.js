@@ -411,6 +411,54 @@
     render();
   }
 
+  // ===== Scroll reveal: sections animate in as they come into view =====
+  // Headings and text rise in, cards come in one after another, side-by-side items slide in from the left and right,
+  // and the frame wall zooms in. Each element animates once; nothing is hidden for "reduce motion" or old browsers.
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const DIRS = ['rv-left', 'rv-right', 'rv-zoom'];
+    const items = [];
+    const add = (els, dir, step = 0.1) => [...els].forEach((el, i) => {
+      if (!el || el.classList.contains('rv')) return;
+      el.classList.add('rv');
+      if (dir) el.classList.add(typeof dir === 'function' ? dir(i) : dir);
+      if (step) el.style.setProperty('--rv-d', Math.min(i * step, 0.6) + 's');
+      items.push(el);
+    });
+    const $$ = sel => document.querySelectorAll(sel);
+    // Hero: text rises in line by line, the photo carousel slides in from the right.
+    add($$('.hero-copy > *'), null, 0.12);
+    add($$('.gallery-wrap'), 'rv-right', 0);
+    // Section labels and headings
+    $$('main section:not(.hero)').forEach(sec => add(sec.querySelectorAll('.eyebrow, .section-title, #testimonials-title'), null, 0.1));
+    add($$('.stat'), null, 0.1);
+    add($$('.feature'), null, 0.12);
+    add($$('.price-card'), null, 0.12);
+    add($$('.addon-group, .price-note, .pricing-actions'), null, 0.1);
+    add($$('.fw-stage'), 'rv-zoom', 0);
+    add($$('.fw-panel'), 'rv-right', 0);
+    add($$('.schools > div'), 'rv-left', 0);
+    add($$('.schools > .cta'), 'rv-right', 0);
+    add($$('.testimonial'), i => (i % 3 === 0 ? 'rv-left' : i % 3 === 2 ? 'rv-right' : 'rv-zoom'), 0.1);
+    add($$('.about > p'), null, 0.1);
+    add($$('.mv-card'), i => (i % 2 ? 'rv-right' : 'rv-left'), 0);
+    add($$('.about-sub'), null, 0);
+    add($$('.service-list li'), null, 0.05);
+    add($$('.branch'), null, 0.1);
+    add($$('.faq-item'), null, 0.06);
+
+    // After it has animated in, take the classes off so the element's own hover/transition styles apply again.
+    const settle = el => { el.classList.remove('rv', 'rv-in', ...DIRS); el.style.removeProperty('--rv-d'); };
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      io.unobserve(el);
+      el.classList.add('rv-in');
+      const delay = parseFloat(el.style.getPropertyValue('--rv-d')) || 0;
+      setTimeout(() => settle(el), (delay + 1.1) * 1000);
+    }), { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    items.forEach(el => io.observe(el));
+  }
+
   // ===== Parallax on scroll: the hero glow and text drift, section headings float a little =====
   // Kept small on purpose, and switched off for visitors who turned on "reduce motion".
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
