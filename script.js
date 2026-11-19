@@ -413,18 +413,28 @@
 
   // ===== Scroll reveal: sections animate in as they come into view =====
   // Headings and text rise in, cards come in one after another, side-by-side items slide in from the left and right,
-  // and the frame wall zooms in. Each element animates once. Phones and computers both get it; with "reduce motion"
-  // turned on the CSS turns it into a plain fade. Old browsers without IntersectionObserver just show everything.
+  // and the frame wall zooms in. It plays every time an element comes into view, scrolling down or back up
+  // (scrolling up, things drop in from above). Phones and computers both get it; with "reduce motion" turned on
+  // the CSS turns it into a plain fade. Old browsers without IntersectionObserver just show everything.
   if ('IntersectionObserver' in window) {
-    const DIRS = ['rv-left', 'rv-right', 'rv-zoom'];
+    const DIRS = ['rv-left', 'rv-right', 'rv-zoom', 'rv-above'];
     const items = [];
+    // Hidden "before" state for one element; fromAbove = it left through the top, so it comes back down from above.
+    const arm = (el, fromAbove) => {
+      el.classList.remove('rv-in', 'rv-above');
+      el.classList.add('rv');
+      if (el.dataset.rvDir) el.classList.add(el.dataset.rvDir);
+      else if (fromAbove) el.classList.add('rv-above');
+      if (el.dataset.rvD) el.style.setProperty('--rv-d', el.dataset.rvD + 's');
+    };
     // Put everything in its "before" state instantly (no fade-out), then turn transitions back on.
     document.documentElement.classList.add('rv-setup');
     const add = (els, dir, step = 0.1) => [...els].forEach((el, i) => {
-      if (!el || el.classList.contains('rv')) return;
-      el.classList.add('rv');
-      if (dir) el.classList.add(typeof dir === 'function' ? dir(i) : dir);
-      if (step) el.style.setProperty('--rv-d', Math.min(i * step, 0.6) + 's');
+      if (!el || el.dataset.rv) return;
+      el.dataset.rv = '1';
+      if (dir) el.dataset.rvDir = typeof dir === 'function' ? dir(i) : dir;
+      if (step) el.dataset.rvD = String(Math.min(i * step, 0.6));
+      arm(el, false);
       items.push(el);
     });
     const $$ = sel => document.querySelectorAll(sel);
@@ -452,16 +462,23 @@
     document.documentElement.classList.remove('rv-setup');
 
     // After it has animated in, take the classes off so the element's own hover/transition styles apply again.
+    const timers = new Map();
     const settle = el => { el.classList.remove('rv', 'rv-in', ...DIRS); el.style.removeProperty('--rv-d'); };
-    const io = new IntersectionObserver(entries => entries.forEach(e => {
-      if (!e.isIntersecting) return;
+    // Comes into view → animate in.
+    const showIO = new IntersectionObserver(entries => entries.forEach(e => {
       const el = e.target;
-      io.unobserve(el);
+      if (!e.isIntersecting || !el.classList.contains('rv') || el.classList.contains('rv-in')) return;
       el.classList.add('rv-in');
-      const delay = parseFloat(el.style.getPropertyValue('--rv-d')) || 0;
-      setTimeout(() => settle(el), (delay + 1.1) * 1000);
+      clearTimeout(timers.get(el));
+      timers.set(el, setTimeout(() => settle(el), ((parseFloat(el.dataset.rvD) || 0) + 1.1) * 1000));
     }), { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
-    items.forEach(el => io.observe(el));
+    // Completely off screen → reset it, so it animates again next time it scrolls into view (down or up).
+    const hideIO = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) return;
+      clearTimeout(timers.get(e.target));
+      arm(e.target, e.boundingClientRect.top < 0);
+    }), { threshold: 0 });
+    items.forEach(el => { showIO.observe(el); hideIO.observe(el); });
   }
 
   // ===== Parallax on scroll: the hero glow and text drift, section headings float a little =====

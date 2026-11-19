@@ -590,6 +590,7 @@ button{font:inherit}
 .rv.rv-left{transform:translateX(-90px)}
 .rv.rv-right{transform:translateX(90px)}
 .rv.rv-zoom{transform:scale(.9) translateY(40px)}
+.rv.rv-above{transform:translateY(-56px)}
 .rv.rv-in{opacity:1;transform:none}
 .rv-setup .rv{transition:none!important}
 /* Phones: shorter moves so it fits a small screen */
@@ -598,9 +599,10 @@ button{font:inherit}
   .rv.rv-left{transform:translateX(-48px)}
   .rv.rv-right{transform:translateX(48px)}
   .rv.rv-zoom{transform:scale(.94) translateY(28px)}
+  .rv.rv-above{transform:translateY(-40px)}
   .rv.rv-in{transform:none}
 }
 /* "Reduce motion" / "Remove animations" on the phone: a gentle fade only, nothing slides */
 @media (prefers-reduced-motion:reduce){
-  .rv,.rv.rv-left,.rv.rv-right,.rv.rv-zoom{transform:none!important;transition:opacity .7s ease!important;transition-delay:var(--rv-d,0s)!important}
+  .rv,.rv.rv-left,.rv.rv-right,.rv.rv-zoom,.rv.rv-above{transform:none!important;transition:opacity .7s ease!important;transition-delay:var(--rv-d,0s)!important}
 }
