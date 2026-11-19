@@ -452,6 +452,7 @@ button{font:inherit}
   white-space:nowrap;transition:opacity .4s,translate .4s;pointer-events:none}
 .fw-hint b{color:#9b1c1c}
 .fw-stage.is-zoomed .fw-hint{opacity:0;translate:-50% 10px}
+.fw-hint--swipe{display:none}
 .fw-zoom-ui{position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0;transition:opacity .4s .5s}
 .fw-stage.is-zoomed .fw-zoom-ui{opacity:1}
 .fw-stage.is-zoomed .fw-zoom-ui>*{pointer-events:auto}
@@ -491,7 +492,12 @@ button{font:inherit}
  .fw-stage{border-radius:18px}
  .fw-frame{left:var(--mx);top:var(--my);width:var(--mfw)}
  .fw-back{padding:8px 12px;font-size:12px}
- .fw-nav{width:40px;height:40px;font-size:24px}
+ /* Phones: hints sit at the top so small screens see them; swipe replaces the arrows. */
+ .fw-nav{display:none}
+ .fw-hint{top:8px;bottom:auto;padding:7px 12px;font-size:11px}
+ .fw-stage.is-zoomed .fw-hint{translate:-50% -10px}
+ .fw-hint--swipe{display:block;top:12px;left:auto;right:12px;padding:8px 12px;translate:none;opacity:0}
+ .fw-stage.is-zoomed .fw-hint.fw-hint--swipe{opacity:1;translate:none;transition-delay:.5s}
  .fw-panel{grid-template-columns:1fr;gap:22px;margin-top:22px}
  .fw-chips{grid-template-columns:repeat(2,1fr)}
  .fw-info .cta{align-self:stretch;justify-content:center}
