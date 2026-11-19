@@ -413,10 +413,13 @@
 
   // ===== Scroll reveal: sections animate in as they come into view =====
   // Headings and text rise in, cards come in one after another, side-by-side items slide in from the left and right,
-  // and the frame wall zooms in. Each element animates once; nothing is hidden for "reduce motion" or old browsers.
-  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // and the frame wall zooms in. Each element animates once. Phones and computers both get it; with "reduce motion"
+  // turned on the CSS turns it into a plain fade. Old browsers without IntersectionObserver just show everything.
+  if ('IntersectionObserver' in window) {
     const DIRS = ['rv-left', 'rv-right', 'rv-zoom'];
     const items = [];
+    // Put everything in its "before" state instantly (no fade-out), then turn transitions back on.
+    document.documentElement.classList.add('rv-setup');
     const add = (els, dir, step = 0.1) => [...els].forEach((el, i) => {
       if (!el || el.classList.contains('rv')) return;
       el.classList.add('rv');
@@ -445,6 +448,8 @@
     add($$('.service-list li'), null, 0.05);
     add($$('.branch'), null, 0.1);
     add($$('.faq-item'), null, 0.06);
+    void document.body.offsetHeight; // apply the "before" state now
+    document.documentElement.classList.remove('rv-setup');
 
     // After it has animated in, take the classes off so the element's own hover/transition styles apply again.
     const settle = el => { el.classList.remove('rv', 'rv-in', ...DIRS); el.style.removeProperty('--rv-d'); };
