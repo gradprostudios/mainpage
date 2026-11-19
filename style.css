@@ -491,7 +491,9 @@ button{font:inherit}
  .frame-wall{padding:54px 22px 24px}
  .fw-stage{border-radius:18px}
  .fw-frame{left:var(--mx);top:var(--my);width:var(--mfw)}
- .fw-back{padding:8px 12px;font-size:12px}
+ /* Back to wall matches the light "Swipe" pill on phones */
+ .fw-back{top:12px;padding:8px 12px;font-size:11px;font-weight:600;color:#2a1d10;background:rgba(255,248,236,.9);box-shadow:0 6px 18px rgba(60,35,10,.18)}
+ .fw-back:hover,.fw-back:focus-visible{color:#2a1d10;background:#fff8ec}
  /* Phones: hints sit at the top so small screens see them; swipe replaces the arrows. */
  .fw-nav{display:none}
  .fw-hint{top:8px;bottom:auto;padding:7px 12px;font-size:11px}
