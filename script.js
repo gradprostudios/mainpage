@@ -101,25 +101,38 @@
       });
       if (count) count.textContent = `${String(index + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
     }
-    function goTo(nextIndex) {
+    const status = document.querySelector('#carousel-status');
+    function goTo(nextIndex, fromUser = true) {
       index = ((nextIndex % total) + total) % total;
       paint();
+      // Announce only slides the visitor chose; autoplay steps stay silent for screen readers.
+      if (fromUser && status) status.textContent = `Portrait ${index + 1} of ${total}`;
       scheduleAuto();
     }
-    const step = amount => goTo(index + amount);
+    const step = (amount, fromUser = true) => goTo(index + amount, fromUser);
 
     // ===== Autoplay =====
     const AUTOPLAY_MS = 2500; // time each photo stays in the center (change this to speed up / slow down)
     let autoTimer = null;
-    let paused = false;
+    let paused = false;      // temporary: hover, focus or touch
+    let userPaused = false;  // the visitor pressed the pause button
     function stopAuto() { clearTimeout(autoTimer); autoTimer = null; }
     function scheduleAuto() {
       stopAuto();
-      if (paused || reducedMotion.matches || document.hidden || total < 2) return;
-      autoTimer = setTimeout(() => step(1), AUTOPLAY_MS);
+      if (paused || userPaused || reducedMotion.matches || document.hidden || total < 2) return;
+      autoTimer = setTimeout(() => step(1, false), AUTOPLAY_MS);
     }
     const pause = () => { paused = true; stopAuto(); };
     const resume = () => { paused = false; scheduleAuto(); };
+
+    // Pause / play button for the slideshow
+    const pauseBtn = document.querySelector('#carousel-pause');
+    pauseBtn?.addEventListener('click', () => {
+      userPaused = !userPaused;
+      pauseBtn.classList.toggle('is-paused', userPaused);
+      pauseBtn.setAttribute('aria-label', userPaused ? 'Play slideshow' : 'Pause slideshow');
+      if (userPaused) stopAuto(); else scheduleAuto();
+    });
 
     prev?.addEventListener('click', () => step(-1));
     next?.addEventListener('click', () => step(1));
@@ -530,4 +543,59 @@
 
   const year = document.querySelector('#year');
   if (year) year.textContent = new Date().getFullYear();
+
+  // Student Login modal (Google only). Its button goes to /login?google=1, where the portal starts Google sign-in.
+  const loginModal = document.querySelector('#loginModal');
+  if (loginModal && typeof loginModal.showModal === 'function') {
+    let lastFocus = null;
+    const google = loginModal.querySelector('.lm-google');
+    // One modal, two modes: "login" and "register" swap the texts and show that mode's extra lines.
+    // Both use the same Google button: the portal signs in old students and creates the account for new ones.
+    const setMode = (mode) => {
+      loginModal.dataset.mode = mode;
+      loginModal.querySelectorAll('[data-login-text]').forEach((el) => {
+        el.textContent = el.dataset[mode === 'register' ? 'registerText' : 'loginText'];
+      });
+      loginModal.querySelectorAll('[data-pane]').forEach((el) => { el.hidden = el.dataset.pane !== mode; });
+      // Register goes to /register?google=1 (Google, then the details form at /register); login to /login?google=1
+      if (google) google.href = google.dataset[mode === 'register' ? 'registerHref' : 'loginHref'];
+      // While registering, the address bar shows gradprostudios.com/register
+      setPath(mode === 'register' ? '/register' : '/');
+    };
+    // Only swaps between "/" and "/register" so other addresses (and the #section part) are left alone.
+    const setPath = (path) => {
+      const here = window.location.pathname;
+      if ((here === '/' || here === '/register') && here !== path) history.replaceState(null, '', path + window.location.hash);
+    };
+    const openModal = (event, mode) => {
+      if (event) event.preventDefault();
+      lastFocus = document.activeElement;
+      if (menuButton && menuButton.getAttribute('aria-expanded') === 'true') menuButton.click();
+      setMode(mode);
+      loginModal.showModal();
+      document.body.classList.add('lm-lock');
+      if (google) google.focus();
+    };
+    document.querySelectorAll('[data-login-open]').forEach((link) => link.addEventListener('click', (event) => openModal(event, 'login')));
+    document.querySelectorAll('[data-register-open]').forEach((link) => link.addEventListener('click', (event) => openModal(event, 'register')));
+    // "Create an account" / "Log in" links inside the modal switch modes without closing it
+    loginModal.querySelectorAll('[data-lm-mode]').forEach((btn) => btn.addEventListener('click', () => {
+      setMode(btn.dataset.lmMode);
+      if (google) google.focus();
+    }));
+    loginModal.querySelectorAll('[data-login-close]').forEach((btn) => btn.addEventListener('click', () => loginModal.close()));
+    // Click on the dimmed area outside the card closes it
+    loginModal.addEventListener('click', (event) => { if (event.target === loginModal) loginModal.close(); });
+    loginModal.addEventListener('close', () => {
+      document.body.classList.toggle('lm-lock', false);
+      setPath('/');
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    });
+    // gradprostudios.com/register (sent here by the portal as /?register) opens the register modal
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('register') || window.location.pathname === '/register') {
+      history.replaceState(null, '', '/' + window.location.hash);
+      openModal(null, 'register');
+    }
+  }
 })();
