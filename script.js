@@ -466,8 +466,8 @@
     add($$('.schools > .cta'), 'rv-right', 0);
     add($$('.testimonial'), i => (i % 3 === 0 ? 'rv-left' : i % 3 === 2 ? 'rv-right' : 'rv-zoom'), 0.1);
     add($$('.about > p'), null, 0.1);
-    add($$('.mv-card'), i => (i % 2 ? 'rv-right' : 'rv-left'), 0);
-    add($$('.about-sub'), null, 0);
+    add($$('.about-mv .mv-card'), i => (i % 2 ? 'rv-right' : 'rv-left'), 0);
+    add($$('.svc-card'), null, 0);
     add($$('.service-list li'), null, 0.05);
     add($$('.branch'), null, 0.1);
     add($$('.faq-item'), null, 0.06);
