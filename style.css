@@ -149,7 +149,6 @@ button{font:inherit}
 .hero h1{font-family:Poppins,Inter,sans-serif;font-size:clamp(48px,5.1vw,78px);line-height:1.06;letter-spacing:-.065em;margin:0;font-weight:700}
 .hero h1 em{font-style:normal;color:var(--gold)}
 .hero-description{font-size:15px;line-height:1.85;color:var(--muted);max-width:445px;margin:25px 0 29px}
-.hero-note{display:flex;align-items:center;color:var(--faint);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-top:50px}
 
 /* ===== 4. BUTTONS (CTA) ===== */
 .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--gold);color:var(--cta-text);border:1px solid var(--gold);border-radius:999px;padding:15px 28px;font-weight:700;font-size:13px;transition:transform .22s,box-shadow .22s,background .22s}
@@ -159,8 +158,7 @@ button{font:inherit}
 
 /* ===== 5. GALLERY (base) ===== */
 .gallery-wrap{min-width:0;position:relative}
-.gallery-topline,.gallery-controls{display:flex;justify-content:space-between;align-items:center;color:var(--faint);font-size:9px;letter-spacing:.16em}
-.gallery-topline{margin:0 0 17px;padding:0 2px}
+.gallery-controls{display:flex;justify-content:flex-end;align-items:center;color:var(--faint);font-size:9px;letter-spacing:.16em}
 .gallery-controls{padding:0 2px}
 .gallery-controls span{font-size:8px}
 .gallery-arrow{border:1px solid var(--ctrl-line);background:transparent;color:var(--text);width:31px;height:31px;border-radius:50%;cursor:pointer;transition:border-color .2s,color .2s}
@@ -219,9 +217,7 @@ button{font:inherit}
  .hero h1{font-size:clamp(45px,12vw,67px);line-height:1.04;letter-spacing:-.065em}
  .hero-description{font-size:14px;line-height:1.75;margin:20px 0 24px;max-width:520px}
  .cta{width:100%;padding:16px 20px;font-size:13px}
- .hero-note{margin-top:28px;font-size:11px}
  .gallery-wrap{width:100%;margin:0}
- .gallery-topline{font-size:11px;margin-bottom:13px}
  .gallery-controls{padding-right:2px}
  .gallery-controls span{font-size:11px}
  .features{display:flex;flex-direction:column;padding:10px 22px;border-top:1px solid var(--line)}
@@ -281,7 +277,6 @@ button{font:inherit}
 .carousel-dot{position:relative}
 .carousel-dot::after{content:"";position:absolute;inset:-9px -3px}
 .gallery-controls{gap:12px}
-.gallery-controls span:first-child{font-size:8px}
 .carousel-count{white-space:nowrap;color:var(--red-text)!important;font-variant-numeric:tabular-nums}
 
 /* ===== 11. CAROUSEL RESPONSIVE ===== */
@@ -300,7 +295,7 @@ button{font:inherit}
  .carousel-dot{width:5px;height:5px}
  .carousel-dot.is-active{width:18px}
  .gallery-controls{padding-inline:2px}
- .gallery-controls span,.gallery-controls span:first-child{font-size:11px}
+ .gallery-controls span{font-size:11px}
 }
 @media(max-width:380px){
  .carousel-arrow{width:28px;height:28px}
@@ -530,7 +525,8 @@ button{font:inherit}
 .mv-card h3{margin:0 0 10px;font:700 18px/1.2 Poppins,Inter,sans-serif;color:var(--red-text)}
 .about .mv-card p{margin:0;font-size:14px;line-height:1.75;max-width:none}
 .about-sub{margin:0 0 16px;font:700 18px/1.2 Poppins,Inter,sans-serif}
-.service-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+/* pills sized to their text, wrapping onto new rows: no empty space inside the cards */
+.service-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
 .service-list li{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--card-border);border-radius:12px;background:var(--panel);font-size:13px;font-weight:600}
 .service-list li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--gold)}
 .branches{max-width:var(--content);margin:0 auto;padding:80px 5.4% 40px}
@@ -543,13 +539,12 @@ button{font:inherit}
 .faq-item p a{color:var(--red-text);text-decoration:underline}
 @media(max-width:1100px){
  .branch-list{grid-template-columns:repeat(3,1fr)}
- .service-list{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:760px){
  .branches{padding:54px 22px 24px}
  .about-mv{grid-template-columns:1fr;gap:12px;margin:24px 0 30px}
  .mv-card{padding:20px}
- .service-list{grid-template-columns:1fr;gap:8px}
+ .service-list{gap:8px}
  .branch-list{grid-template-columns:1fr;gap:12px}
  .branch{padding:18px}
 }
@@ -625,8 +620,7 @@ button{font:inherit}
 .lm-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;transform:scale(var(--lm-zoom));transform-origin:50% 20%}
 .lm-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(20,4,4,.88) 100%)}
 .lm-caption{position:absolute;left:22px;right:22px;bottom:22px;z-index:1;color:#fff}
-.lm-pill{display:inline-block;padding:6px 12px;border-radius:999px;background:#b22222;font:700 10px/1 Inter,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}
-.lm-caption p{margin:10px 0 0;font:italic 500 17px/1.35 Georgia,"Times New Roman",serif;opacity:.95}
+.lm-caption p{margin:0;font:italic 500 17px/1.35 Georgia,"Times New Roman",serif;opacity:.95}
 .lm-body{position:relative;display:flex;flex-direction:column;justify-content:center;padding:48px 44px 36px}
 .lm-close{position:absolute;z-index:2;top:14px;right:14px;display:grid;place-items:center;width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:var(--text);cursor:pointer}
 .lm-close:hover{background:var(--line-soft)}
