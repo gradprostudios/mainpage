@@ -1,7 +1,20 @@
 {
   "rewrites": [
-    { "source": "/login", "destination": "/portal/index.html" },
-    { "source": "/register", "destination": "/portal/index.html" },
-    { "source": "/dashboard", "destination": "/portal/index.html" }
+    {
+      "source": "/login",
+      "destination": "/portal/index.html"
+    },
+    {
+      "source": "/register",
+      "destination": "/portal/index.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/portal/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/portal/admin.html"
+    }
   ]
 }
