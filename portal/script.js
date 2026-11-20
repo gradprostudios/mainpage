@@ -229,6 +229,8 @@ function rpcFail(alertId, error, fallback){
 
 function expireSession(message){
   clearSession();
+  // Main website: an expired session goes back to the home page, where Student Login opens the modal.
+  if (ON_MAIN_SITE) { window.location.assign('/'); return; }
   closeSchedule();
   currentUser = null;
   currentProfile = null;
@@ -612,6 +614,8 @@ async function handleOAuthReturn(st){
   const label = SOCIAL_PROVIDERS[st.provider] || st.provider;
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
+    // Main website: cancelled Google sign-in just goes back to the home page.
+    if (ON_MAIN_SITE) { window.location.replace('/'); return; }
     showView('login');
     alertBox('loginAlert', 'Sign-in was cancelled or failed. Please try again.', 'error');
     return;
@@ -954,8 +958,16 @@ document.getElementById('cpSaveBtn').addEventListener('click', async () => {
 
 /* -------------------- SIGN OUT -------------------- */
 // Revokes the token server-side (best effort) and clears it locally.
-function signOutStudent(message){
+async function signOutStudent(message){
   const token = getSession();
+  if (ON_MAIN_SITE) {
+    // Main website: finish the logout first, then go to the home page (not the portal's own login page).
+    clearSession();
+    if (token) await sb.rpc('student_logout', { p_token: token }).then(() => {}, () => {});
+    await sb.auth.signOut();
+    window.location.assign('/');
+    return;
+  }
   if (token) sb.rpc('student_logout', { p_token: token }).then(() => {}, () => {});
   sb.auth.signOut();
   expireSession(message);
@@ -2679,15 +2691,8 @@ function updateStep2Preview(){
 document.querySelectorAll('input[name="s2SuffixPlacement"]').forEach(r =>
   r.addEventListener('change', updateStep2Preview));
 
-document.getElementById('step2Cancel').addEventListener('click', async () => {
-  if (!ON_MAIN_SITE) { signOutStudent(); return; }
-  // Main website: end the session first, then go back to the home page the modal was showing.
-  const token = getSession();
-  clearSession();
-  if (token) await sb.rpc('student_logout', { p_token: token }).then(() => {}, () => {});
-  await sb.auth.signOut();
-  window.location.assign('/');
-});
+// On the main website signOutStudent() also takes the student back to the home page.
+document.getElementById('step2Cancel').addEventListener('click', () => signOutStudent());
 
 document.getElementById('step2Form').addEventListener('submit', async (e) => {
   e.preventDefault();
