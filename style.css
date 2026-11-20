@@ -442,6 +442,16 @@ button{font:inherit}
     linear-gradient(128deg,transparent 18%,rgba(255,232,190,.14) 22%,rgba(255,232,190,.14) 31%,transparent 31.6%,transparent 33.4%,rgba(255,232,190,.14) 34%,rgba(255,232,190,.14) 43%,transparent 47%)
       calc(40% - var(--tx,0) * 40%) 0/200% 100% no-repeat;
   transition:background-position .25s ease-out}
+/* window reflection in the glass (web/frames/reflection.webp): bright sky and clouds show, dark trees and window
+   bars let the photo through. --fw-refl = strength (0 = off, .35 = strong). Each frame shows a different part of
+   the window (from its place on the wall, --x) and it slides a little with tilt / mouse (--tx, --ty). */
+:root{--fw-refl:.2}
+.fw-sun::before{content:"";position:absolute;inset:0;opacity:var(--fw-refl);
+  background:url(web/frames/reflection.webp) calc(25% + var(--x,0%) * .9 - var(--tx,0) * 16%) calc(30% - var(--ty,0) * 12%)/auto 160% no-repeat;
+  -webkit-mask:linear-gradient(160deg,#000 0%,rgba(0,0,0,.5) 40%,rgba(0,0,0,.12) 100%);
+  mask:linear-gradient(160deg,#000 0%,rgba(0,0,0,.5) 40%,rgba(0,0,0,.12) 100%);
+  transition:background-position .25s ease-out}
+@media (prefers-reduced-motion:reduce){ .fw-sun::before{transition:none} }
 
 /* controls on top of the room */
 .fw-hint{position:absolute;left:50%;bottom:16px;translate:-50% 0;z-index:5;margin:0;padding:9px 14px;border-radius:999px;font-size:12px;font-weight:600;
