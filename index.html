@@ -37,8 +37,8 @@
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="#home" aria-label="Grad Pro Studios home"><img class="logo-dark" src="web/logo-dark.png" width="360" height="159" alt="Grad Pro Studios logo"><img class="logo-light" src="web/logo.png" width="168" height="74" alt="Grad Pro Studios logo"></a>
-      <!-- Student Login: replace [PORTAL URL] with the real student portal address -->
-      <a class="login-btn" href="[PORTAL URL]">Student Login</a>
+      <!-- Student Login opens the Google-only login modal; without JavaScript it goes straight to the portal at /login -->
+      <a class="login-btn" href="/login" data-login-open>Student Login</a>
       <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav"><span></span><span></span><span></span></button>
       <nav class="nav" id="primary-nav" aria-label="Main navigation">
         <a class="nav-link active" href="#home">Home</a>
@@ -65,26 +65,28 @@
         <div class="carousel-shell" id="graduation-carousel" role="region" aria-roledescription="carousel" aria-label="Graduation portraits">
           <div class="carousel-viewport" id="carousel-viewport" tabindex="0" aria-label="Use left and right arrow keys to browse portraits">
             <div class="portrait-gallery" id="portrait-gallery">
-              <figure class="portrait" data-slide="0"><img src="web/carousel-01.webp" alt="Grad Pro Studios graduation portrait 01 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="1"><img src="web/carousel-02.webp" alt="Grad Pro Studios graduation portrait 02 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="2"><img src="web/carousel-03.webp" alt="Grad Pro Studios graduation portrait 03 — [DESCRIBE: attire, school, pose]" loading="eager" fetchpriority="high" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="3"><img src="web/carousel-04.webp" alt="Grad Pro Studios graduation portrait 04 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="4"><img src="web/carousel-05.webp" alt="Grad Pro Studios graduation portrait 05 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="5"><img src="web/carousel-06.webp" alt="Grad Pro Studios graduation portrait 06 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="6"><img src="web/carousel-07.webp" alt="Grad Pro Studios graduation portrait 07 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="7"><img src="web/carousel-08.webp" alt="Grad Pro Studios graduation portrait 08 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="8"><img src="web/carousel-09.webp" alt="Grad Pro Studios graduation portrait 09 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="9"><img src="web/carousel-10.jpg" alt="Grad Pro Studios graduation portrait 10 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="10"><img src="web/carousel-11.webp" alt="Grad Pro Studios graduation portrait 11 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="11"><img src="web/carousel-12.webp" alt="Grad Pro Studios graduation portrait 12 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="12"><img src="web/carousel-13.webp" alt="Grad Pro Studios graduation portrait 13 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
-              <figure class="portrait" data-slide="13"><img src="web/carousel-14.webp" alt="Grad Pro Studios graduation portrait 14 — [DESCRIBE: attire, school, pose]" loading="eager" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="0"><img width="800" height="1000" src="web/carousel-01.webp" alt="Grad Pro Studios graduation portrait 01 — [DESCRIBE: attire, school, pose]" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="1"><img width="800" height="1000" src="web/carousel-02.webp" alt="Grad Pro Studios graduation portrait 02 — [DESCRIBE: attire, school, pose]" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="2"><img width="800" height="1000" src="web/carousel-03.webp" alt="Grad Pro Studios graduation portrait 03 — [DESCRIBE: attire, school, pose]" fetchpriority="high" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="3"><img width="800" height="1000" src="web/carousel-04.webp" alt="Grad Pro Studios graduation portrait 04 — [DESCRIBE: attire, school, pose]" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="4"><img width="800" height="1000" src="web/carousel-05.webp" alt="Grad Pro Studios graduation portrait 05 — [DESCRIBE: attire, school, pose]" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="5"><img width="800" height="1000" src="web/carousel-06.webp" alt="Grad Pro Studios graduation portrait 06 — [DESCRIBE: attire, school, pose]" loading="lazy" fetchpriority="low" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="6"><img width="800" height="1000" src="web/carousel-07.webp" alt="Grad Pro Studios graduation portrait 07 — [DESCRIBE: attire, school, pose]" loading="lazy" fetchpriority="low" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="7"><img width="800" height="1000" src="web/carousel-08.webp" alt="Grad Pro Studios graduation portrait 08 — [DESCRIBE: attire, school, pose]" loading="lazy" fetchpriority="low" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="8"><img width="800" height="1000" src="web/carousel-09.webp" alt="Grad Pro Studios graduation portrait 09 — [DESCRIBE: attire, school, pose]" loading="lazy" fetchpriority="low" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="9"><img width="800" height="1000" src="web/carousel-10.webp" alt="Grad Pro Studios graduation portrait 10 — [DESCRIBE: attire, school, pose]" loading="lazy" fetchpriority="low" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="10"><img width="800" height="1000" src="web/carousel-11.webp" alt="Grad Pro Studios graduation portrait 11 — [DESCRIBE: attire, school, pose]" loading="lazy" fetchpriority="low" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="11"><img width="800" height="1000" src="web/carousel-12.webp" alt="Grad Pro Studios graduation portrait 12 — [DESCRIBE: attire, school, pose]" loading="lazy" fetchpriority="low" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="12"><img width="800" height="1000" src="web/carousel-13.webp" alt="Grad Pro Studios graduation portrait 13 — [DESCRIBE: attire, school, pose]" loading="lazy" fetchpriority="low" decoding="async" draggable="false"><figcaption></figcaption></figure>
+              <figure class="portrait" data-slide="13"><img width="800" height="1000" src="web/carousel-14.webp" alt="Grad Pro Studios graduation portrait 14 — [DESCRIBE: attire, school, pose]" loading="lazy" fetchpriority="low" decoding="async" draggable="false"><figcaption></figcaption></figure>
               </div>
           </div>
         </div>
         <!-- Dots and counter are generated by script.js from the number of slides -->
         <div class="carousel-pagination" id="carousel-pagination" role="group" aria-label="Choose graduation portrait"></div>
-        <div class="gallery-controls"><span>SWIPE OR TAP A PHOTO TO EXPLORE</span><span class="carousel-count" id="carousel-count" aria-live="polite"></span></div>
+        <div class="gallery-controls"><span>SWIPE OR TAP A PHOTO TO EXPLORE</span><div class="gallery-right"><button class="carousel-pause" id="carousel-pause" type="button" aria-label="Pause slideshow"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button><span class="carousel-count" id="carousel-count"></span></div></div>
+        <!-- Screen readers hear slide changes only when the visitor picks one, not on every autoplay step -->
+        <p class="sr-only" id="carousel-status" role="status"></p>
       </div>
     </section>
 
@@ -341,6 +343,29 @@
       <details class="faq-item"><summary>Where do I get my photos?</summary><p>Your photos are released through the student portal or Google Drive. [ADD DETAILS]</p></details>
     </section>
   </main>
+
+  <!-- Student login modal. Google only: /login?google=1 is the student portal (served on this domain) starting its Google sign-in. -->
+  <dialog class="lm" id="loginModal" aria-labelledby="lm-title">
+    <div class="lm-card">
+      <button class="lm-close" type="button" aria-label="Close" data-login-close><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <div class="lm-photo">
+        <picture>
+          <!-- Phones: the whole, uncropped photo (4:5) -->
+          <source media="(max-width:700px)" srcset="web/login-photo-mobile.webp" width="720" height="900">
+          <img src="web/login-photo.webp" width="719" height="1160" alt="Graduate in a red toga, photographed by Grad Pro Studios" loading="lazy" decoding="async">
+        </picture>
+        <div class="lm-caption"><span class="lm-pill">Graduation photo portal</span><p>Your milestones, all in one place.</p></div>
+      </div>
+      <div class="lm-body">
+        <div class="lm-brand"><img class="lm-logo lm-logo--light" src="web/logo.png" width="168" height="74" alt="Grad Pro Studios"><img class="lm-logo lm-logo--dark" src="web/logo-dark.png" width="360" height="159" alt="Grad Pro Studios"><span>Student Portal</span></div>
+        <h2 id="lm-title">Log in to your account</h2>
+        <p class="lm-sub">Welcome back! Access your graduation photos.</p>
+        <a class="lm-google" href="/login?google=1"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</a>
+        <p class="lm-note"><b>New student?</b> The same button creates your account. Use a Google account you check often, so you never lose access to your photos.</p>
+        <p class="lm-legal">By continuing, you agree to our <a href="/portal/terms.html" target="_blank" rel="noopener">Terms</a> and <a href="/portal/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+      </div>
+    </div>
+  </dialog>
 
   <footer class="site-footer"><a class="footer-brand" href="#home">GRAD PRO <b>STUDIOS</b></a><a href="mailto:admin@gradprostudios.com">admin@gradprostudios.com</a><a href="mailto:gradprostudios@gmail.com">gradprostudios@gmail.com</a><a href="tel:+63822210011">Main office (082) 221-00-11</a><a href="#branches">Our branches</a><div class="footer-socials"><a href="https://www.facebook.com/gradprostudios" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3 0-5 2-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.7.3-1 1-1Z"/></svg><span>Facebook</span></a></div><span class="copyright">© <span id="year">2026</span> Grad Pro Studios Photography Inc.</span></footer><script src="script.js"></script>
 </body>
