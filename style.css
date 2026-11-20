@@ -613,8 +613,9 @@ button{font:inherit}
 .lm::backdrop{background:rgba(10,8,8,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .lm-card{position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);width:min(860px,100%);min-height:500px;border-radius:18px;overflow:hidden;background:var(--panel);box-shadow:0 30px 80px var(--shadow-soft);animation:lm-in .35s cubic-bezier(.2,.7,.2,1)}
 @keyframes lm-in{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
-.lm-photo{position:relative;background:#1a0d0d}
-.lm-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+/* --lm-zoom = photo zoom on the login/register modal. 1 = photo fills the box; bigger (1.1, 1.2) zooms in; below 1 (.9) zooms out and shows dark edges */
+.lm-photo{--lm-zoom:1;position:relative;overflow:hidden;background:#1a0d0d}
+.lm-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;transform:scale(var(--lm-zoom));transform-origin:50% 20%}
 .lm-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(20,4,4,.88) 100%)}
 .lm-caption{position:absolute;left:22px;right:22px;bottom:22px;z-index:1;color:#fff}
 .lm-pill{display:inline-block;padding:6px 12px;border-radius:999px;background:#b22222;font:700 10px/1 Inter,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}
@@ -632,12 +633,19 @@ button{font:inherit}
 .lm-brand span{padding-left:16px;border-left:1px solid var(--line);color:var(--red-text);font:700 12px/1.2 Inter,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}
 .lm-body h2{margin:0;font:700 clamp(24px,2.6vw,30px)/1.15 Poppins,Inter,sans-serif;letter-spacing:-.03em}
 .lm-sub{margin:8px 0 28px;color:var(--muted);font-size:14px}
-.lm-google{display:flex;align-items:center;justify-content:center;gap:12px;min-height:50px;padding:12px 18px;border:1.5px solid var(--gold);border-radius:999px;background:var(--panel);color:var(--text);font:600 15px/1 Inter,Arial,sans-serif;text-decoration:none;transition:background .2s,box-shadow .2s,transform .2s}
-.lm-google:hover{background:var(--line-soft);box-shadow:0 8px 22px var(--glow);transform:translateY(-1px)}
+.lm-google{display:flex;align-items:center;justify-content:center;gap:12px;min-height:50px;padding:12px 18px;border:1.5px solid var(--gold);border-radius:999px;background: #b22222;color: #fff;font:600 15px/1 Inter,Arial,sans-serif;text-decoration:none;transition:background .2s,box-shadow .2s,transform .2s}
+/*.lm-google:hover{background:var(--line-soft);box-shadow:0 8px 22px var(--glow);transform:translateY(-1px)} */
 .lm-google:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .lm-google svg{width:22px;height:22px;flex-shrink:0}
 .lm-note{margin:18px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
 .lm-note b{color:var(--text)}
+.lm-switch{padding:0;border:0;background:none;color:var(--gold);font:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.lm-switch:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
+/* Register mode: the three steps a new student goes through */
+.lm-steps{display:flex;gap:8px;margin:-12px 0 24px;padding:0;list-style:none;counter-reset:lm-step}
+.lm [hidden]{display:none}
+.lm-steps li{flex:1;display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:11.5px;line-height:1.35;counter-increment:lm-step}
+.lm-steps li::before{content:counter(lm-step);display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold);font-weight:700;font-size:11px}
 .lm-legal{margin:auto 0 0;padding-top:26px;color:var(--faint);font-size:11.5px;line-height:1.5}
 .lm-legal a{color:inherit;text-decoration:underline}
 body.lm-lock{overflow:hidden}

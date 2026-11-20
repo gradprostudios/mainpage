@@ -548,22 +548,54 @@
   const loginModal = document.querySelector('#loginModal');
   if (loginModal && typeof loginModal.showModal === 'function') {
     let lastFocus = null;
-    const openLogin = (event) => {
-      event.preventDefault();
+    const google = loginModal.querySelector('.lm-google');
+    // One modal, two modes: "login" and "register" swap the texts and show that mode's extra lines.
+    // Both use the same Google button: the portal signs in old students and creates the account for new ones.
+    const setMode = (mode) => {
+      loginModal.dataset.mode = mode;
+      loginModal.querySelectorAll('[data-login-text]').forEach((el) => {
+        el.textContent = el.dataset[mode === 'register' ? 'registerText' : 'loginText'];
+      });
+      loginModal.querySelectorAll('[data-pane]').forEach((el) => { el.hidden = el.dataset.pane !== mode; });
+      // Register goes to /register?google=1 (Google, then the details form at /register); login to /login?google=1
+      if (google) google.href = google.dataset[mode === 'register' ? 'registerHref' : 'loginHref'];
+      // While registering, the address bar shows gradprostudios.com/register
+      setPath(mode === 'register' ? '/register' : '/');
+    };
+    // Only swaps between "/" and "/register" so other addresses (and the #section part) are left alone.
+    const setPath = (path) => {
+      const here = window.location.pathname;
+      if ((here === '/' || here === '/register') && here !== path) history.replaceState(null, '', path + window.location.hash);
+    };
+    const openModal = (event, mode) => {
+      if (event) event.preventDefault();
       lastFocus = document.activeElement;
       if (menuButton && menuButton.getAttribute('aria-expanded') === 'true') menuButton.click();
+      setMode(mode);
       loginModal.showModal();
       document.body.classList.add('lm-lock');
-      const google = loginModal.querySelector('.lm-google');
       if (google) google.focus();
     };
-    document.querySelectorAll('[data-login-open]').forEach((link) => link.addEventListener('click', openLogin));
+    document.querySelectorAll('[data-login-open]').forEach((link) => link.addEventListener('click', (event) => openModal(event, 'login')));
+    document.querySelectorAll('[data-register-open]').forEach((link) => link.addEventListener('click', (event) => openModal(event, 'register')));
+    // "Create an account" / "Log in" links inside the modal switch modes without closing it
+    loginModal.querySelectorAll('[data-lm-mode]').forEach((btn) => btn.addEventListener('click', () => {
+      setMode(btn.dataset.lmMode);
+      if (google) google.focus();
+    }));
     loginModal.querySelectorAll('[data-login-close]').forEach((btn) => btn.addEventListener('click', () => loginModal.close()));
     // Click on the dimmed area outside the card closes it
     loginModal.addEventListener('click', (event) => { if (event.target === loginModal) loginModal.close(); });
     loginModal.addEventListener('close', () => {
       document.body.classList.toggle('lm-lock', false);
+      setPath('/');
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     });
+    // gradprostudios.com/register (sent here by the portal as /?register) opens the register modal
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('register') || window.location.pathname === '/register') {
+      history.replaceState(null, '', '/' + window.location.hash);
+      openModal(null, 'register');
+    }
   }
 })();

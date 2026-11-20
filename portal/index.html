@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+<title>Grad Pro Studios — Student Portal</title>
+<meta name="theme-color" content="#ffffff">
+<script>
+// Apply the saved theme (or the device's light/dark setting) before first paint, so dark mode
+// never flashes white. Same key as the main page, so a choice made there carries over.
+(function(){
+  var t = null;
+  try { t = localStorage.getItem('gps-theme'); } catch (e) {}
+  if (t !== 'light' && t !== 'dark') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  // gradprostudios.com/login, /register, /dashboard: show a spinner, not the old login page, until
+  // script.js knows where to go (Google sign-in, the details form or the dashboard). See routeReady().
+  if (/^\/(login|register|dashboard)\/?$/.test(location.pathname)) {
+    document.documentElement.classList.add('route-loading');
+    setTimeout(function(){ document.documentElement.classList.remove('route-loading'); }, 15000);
+  }
+})();
+</script>
+<link rel="stylesheet" href="/portal/styles.css">
+<link rel="icon" type="image/png" sizes="64x64" href="/portal/favicon-64.png">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  
+<!-- Vercel Web Analytics -->
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+  
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- AUTH SHELL: login / register / verify-gate / forgot-password   -->
+<!-- ============================================================ -->
+<div class="shell" id="authShell">
+  <button type="button" class="theme-toggle floating" data-theme-toggle aria-label="Switch theme"></button>
+  <div class="panel-left">
+
+    <!-- BRAND LOGO -->
+    <div class="brand-row">
+      <img src="/portal/GPS.png" data-dark-src="/portal/GPS-dark.png" width="1200" height="531" alt="Grad Pro Studios Logo" class="brand-logo">
+    </div>
+
+    <div class="seal-wrap">
+
+      <h1 class="headline">
+        Graduation na, <em> grad pro na!</em>
+      </h1>
+    </div>
+
+    <div class="ribbon-steps">
+      <div class="ribbon-step" id="stepAccount">
+        <span class="dot"></span>Create your account
+      </div>
+
+      <div class="ribbon-step" id="stepVerify">
+        <span class="dot"></span>Verify your email
+      </div>
+
+      <div class="ribbon-step" id="stepPortal">
+        <span class="dot"></span>Manage your student portal
+      </div>
+    </div>
+
+  </div>
+
+  <div class="panel-right">
+
+    <!-- ---------------- LOGIN VIEW ---------------- -->
+    <div class="card" id="view-login">
+      <div class="eyebrow card-eyebrow">Student Portal</div>
+      <h2 class="card-title">Log in</h2>
+      <p class="card-sub">New here? <a href="#" id="goToRegister">Register for an account</a> instead.</p>
+
+      <div id="loginAlert"></div>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="loginEmail">Username or Email</label>
+          <input type="text" id="loginEmail" required autocomplete="username" placeholder="e.g. mariasantos or maria@email.com">
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <div class="password-wrap">
+            <input type="password" id="loginPassword" required autocomplete="current-password" placeholder="••••••••">
+            <button type="button" class="pw-toggle" data-target="loginPassword" aria-label="Show password" aria-pressed="false">
+              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a20.9 20.9 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a20.9 20.9 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="forgot-links">
+          <a href="#" id="goToForgot">Forgot password or username?</a>
+        </div>
+        <div class="field" id="turnstileLogin"></div>
+        <button type="submit" class="btn btn-primary" id="loginSubmit">Log in</button>
+        <div class="social-divider"><span>or</span></div>
+        <div class="social-row">
+          <button type="button" class="btn-social" id="loginGoogle"><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continue with Google</button>
+          <button type="button" class="btn-social" id="loginFacebook" data-fb hidden><svg viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.88v2.27h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>Continue with Facebook</button>
+        </div>
+        <p class="social-note">By continuing with Google<span data-fb hidden> or Facebook</span>, you agree to the <a href="/portal/terms.html" target="_blank" rel="noopener" class="link">Terms &amp; Conditions</a> and <a href="/portal/privacy.html" target="_blank" rel="noopener" class="link">Privacy Policy</a>, and consent to Grad Pro Studios collecting and storing your registration details in accordance with the Data Privacy Act of 2012 (RA 10173).</p>
+      </form>
+    </div>
+
+    <!-- ---------------- REGISTER VIEW ---------------- -->
+    <div class="card hidden" id="view-register">
+      <div class="step-bar" aria-label="Registration progress"><div class="sb-step on" aria-current="step"><span class="sb-bar"></span><span class="sb-lbl">Account</span></div><div class="sb-step"><span class="sb-bar"></span><span class="sb-lbl">Verify</span></div><div class="sb-step"><span class="sb-bar"></span><span class="sb-lbl">Details</span></div><div class="sb-step"><span class="sb-bar"></span><span class="sb-lbl">Book</span></div></div>
+      <div class="eyebrow card-eyebrow">Student Portal</div>
+      <h2 class="card-title">Register</h2>
+      <p class="card-sub">Already registered? <a href="#" id="goToLogin">Log in</a> instead.</p>
+      <div id="selectedPackageBanner" class="hidden" style="margin-bottom:18px; padding:12px 14px; border:1.5px solid var(--maroon); border-radius:9px; background:rgba(178,34,34,0.05); font-size:13px; color:var(--maroon);">
+  Selected package: <strong id="selectedPackageText"></strong>
+</div>
+
+      <div id="registerAlert"></div>
+
+      <form id="registerForm">
+        <div class="field">
+          <label for="regUsername">Username</label>
+          <input type="text" id="regUsername" required minlength="3" maxlength="24" pattern="[a-zA-Z0-9_.]+" autocomplete="username" placeholder="e.g. mariasantos">
+        </div>
+        <div class="field">
+          <label for="regEmail">Email address</label>
+          <input type="email" id="regEmail" required autocomplete="email" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="regPassword">Password</label>
+          <div class="password-wrap">
+            <input type="password" id="regPassword" required autocomplete="new-password" minlength="8" placeholder="At least 8 characters">
+            <button type="button" class="pw-toggle" data-target="regPassword" aria-label="Show password" aria-pressed="false">
+              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a20.9 20.9 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a20.9 20.9 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+          <div class="pw-meter hidden" id="pwMeter" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="pw-meter-lbl" id="pwMeterLbl" aria-live="polite"></div>
+        </div>
+        <div class="field">
+          <label for="regPasswordConfirm">Confirm password</label>
+          <div class="password-wrap">
+            <input type="password" id="regPasswordConfirm" required autocomplete="new-password" minlength="8" placeholder="Re-enter your password">
+            <button type="button" class="pw-toggle" data-target="regPasswordConfirm" aria-label="Show password" aria-pressed="false">
+              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a20.9 20.9 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a20.9 20.9 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+          <ul class="pw-checks" id="pwChecks">
+            <li id="pwCheckLen">At least 8 characters</li>
+            <li id="pwCheckMatch">Passwords match</li>
+          </ul>
+        </div>
+
+        <div class="field consent-field">
+          <label class="consent-check">
+            <input type="checkbox" id="regConsent" required>
+            <span>I agree to the <a href="/portal/terms.html" target="_blank" rel="noopener" class="link">Terms &amp; Conditions</a> and <a href="/portal/privacy.html" target="_blank" rel="noopener" class="link">Privacy Policy</a>.</span>
+          </label>
+          <details class="consent-more">
+            <summary>What we collect and why</summary>
+            <p>Grad Pro Studios collects and stores your registration details (name, contact information, school records, and photos) to process your graduation photography services. Your information is kept confidential and used only for this purpose, in accordance with the Data Privacy Act of 2012 (RA 10173).</p>
+          </details>
+        </div>
+
+        <div class="field" id="turnstileRegister"></div>
+        <button type="submit" class="btn btn-primary" id="registerSubmit">Create account</button>
+      </form>
+        <div class="social-divider" style="margin-top:22px;"><span>or</span></div>
+        <div class="social-row">
+          <button type="button" class="btn-social" id="regGoogle"><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Sign up with Google</button>
+          <button type="button" class="btn-social" id="regFacebook" data-fb hidden><svg viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.88v2.27h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>Sign up with Facebook</button>
+        </div>
+        <p class="social-note">By continuing with Google<span data-fb hidden> or Facebook</span>, you agree to the <a href="/portal/terms.html" target="_blank" rel="noopener" class="link">Terms &amp; Conditions</a> and <a href="/portal/privacy.html" target="_blank" rel="noopener" class="link">Privacy Policy</a>, and consent to Grad Pro Studios collecting and storing your registration details in accordance with the Data Privacy Act of 2012 (RA 10173).</p>
+    </div>
+
+    <!-- ---------------- VERIFY-EMAIL GATE ---------------- -->
+    <div class="card hidden" id="view-verify">
+      <div class="step-bar" aria-label="Registration progress"><div class="sb-step done"><span class="sb-bar"></span><span class="sb-lbl">Account</span></div><div class="sb-step on" aria-current="step"><span class="sb-bar"></span><span class="sb-lbl">Verify</span></div><div class="sb-step"><span class="sb-bar"></span><span class="sb-lbl">Details</span></div><div class="sb-step"><span class="sb-bar"></span><span class="sb-lbl">Book</span></div></div>
+      <div class="status-tag" id="verifyStatusTag">Awaiting verification</div>
+      <h2 class="card-title">Check your inbox</h2>
+      <p class="card-sub" id="verifyCopy">
+        We sent a 6-digit verification code to <strong id="verifyEmailShown">your email</strong>. Enter it below to unlock your dashboard.
+      </p>
+
+      <div id="verifyAlert"></div>
+
+      <form id="otpForm">
+        <div class="field">
+          <label for="otpCode-1">Verification code</label>
+          <input type="hidden" id="otpCode" data-otp-boxes>
+          <div class="otp-meta"><a href="#" id="changeEmailLink">Wrong email? Change it</a></div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="otpSubmit">Verify code</button>
+      </form>
+
+      <div class="field" id="turnstileResend"></div>
+      <button class="btn btn-ghost" id="resendBtn" style="margin-top:12px; margin-bottom:12px;" data-idle="Resend verification code">Resend verification code</button>
+      <button class="btn btn-ghost" id="backToLoginFromVerify">Back to login</button>
+    </div>
+
+    <!-- ---------------- FORGOT PASSWORD — step 1: username + email, then request code ---------------- -->
+    <div class="card hidden" id="view-forgot">
+      <div class="eyebrow card-eyebrow">Student Portal</div>
+      <h2 class="card-title">Forgot password?</h2>
+      <p class="card-sub">Enter your username or the email registered to your account. We will send a 6-digit verification code to that email.</p>
+
+      <div id="forgotAlert"></div>
+
+      <form id="forgotForm">
+        <div class="field">
+          <label for="forgotIdentifier">Username or Email</label>
+          <input type="text" id="forgotIdentifier" required autocomplete="username" placeholder="e.g. mariasantos or maria@email.com">
+        </div>
+        <div class="field" id="turnstileForgot"></div>
+        <button type="submit" class="btn btn-primary" id="forgotSubmit">Send code</button>
+      </form>
+
+      <button class="btn btn-ghost" id="backToLoginFromForgot" style="margin-top:12px;">Back to login</button>
+    </div>
+
+    <!-- ---------------- FORGOT PASSWORD — step 2: OTP + new password ---------------- -->
+    <div class="card hidden" id="view-reset">
+      <div class="eyebrow card-eyebrow">Student Portal</div>
+      <h2 class="card-title">Reset your password</h2>
+      <p class="card-sub" id="resetCopy">
+        Enter the 6-digit code sent to the email registered to <strong id="resetEmailShown">this account</strong>, then choose a new password.
+      </p>
+
+      <div id="resetAlert"></div>
+
+      <form id="resetForm">
+        <div class="field" id="resetOtpField"><label for="resetOtpCode-1">Verification code</label><input type="hidden" id="resetOtpCode" data-otp-boxes></div>
+        <div class="field">
+          <label for="resetPassword">New password</label>
+          <div class="password-wrap">
+            <input type="password" id="resetPassword" required autocomplete="new-password" minlength="8" placeholder="At least 8 characters">
+            <button type="button" class="pw-toggle" data-target="resetPassword" aria-label="Show password" aria-pressed="false">
+              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a20.9 20.9 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a20.9 20.9 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="resetPasswordConfirm">Confirm new password</label>
+          <div class="password-wrap">
+            <input type="password" id="resetPasswordConfirm" required autocomplete="new-password" minlength="8" placeholder="Re-enter your new password">
+            <button type="button" class="pw-toggle" data-target="resetPasswordConfirm" aria-label="Show password" aria-pressed="false">
+              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a20.9 20.9 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a20.9 20.9 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="resetSubmit">Update password</button>
+      </form>
+
+      <div class="field" id="turnstileResetResend" style="margin-top:12px;"></div>
+      <button type="button" class="btn btn-ghost" id="resetResendBtn" style="margin-top:12px;" data-idle="Resend verification code">Resend verification code</button>
+      <button class="btn btn-ghost" id="backToLoginFromReset" style="margin-top:12px;">Back to login</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- STEP 2: STUDENT INFORMATION — standalone, no branding panel,   -->
+<!-- just the form. Shown right after email verification succeeds. -->
+<!-- ============================================================ -->
+<div class="step2-page hidden" id="step2Shell">
+  <button type="button" class="theme-toggle floating" data-theme-toggle aria-label="Switch theme"></button>
+  <div class="step2-card">
+    <h2 class="step2-heading">STUDENT INFORMATION</h2>
+    <div class="step-bar" aria-label="Registration progress"><div class="sb-step done"><span class="sb-bar"></span><span class="sb-lbl">Account</span></div><div class="sb-step done"><span class="sb-bar"></span><span class="sb-lbl">Verify</span></div><div class="sb-step on" aria-current="step"><span class="sb-bar"></span><span class="sb-lbl">Details</span></div><div class="sb-step"><span class="sb-bar"></span><span class="sb-lbl">Book</span></div></div>
+
+    <div id="step2Alert"></div>
+
+    <form id="step2Form">
+      <div class="form-sec"><b>1</b>School<span></span></div>
+      <div class="field suggest-wrap">
+        <label for="s2School">School<span class="req-star">*</span></label>
+        <div class="select-wrap"><input type="text" id="s2School" required autocomplete="off" placeholder="Type to search your school"></div>
+        <div class="suggest-list" id="s2SchoolList"></div>
+        <div class="field-hint">Pick your school from the list. Can't find it? It isn't open for online registration yet, please contact the studio.</div>
+      </div>
+
+      <!-- Shown only after a listed school is picked. -->
+      <div id="s2Rest" class="hidden">
+      <div class="form-sec"><b>2</b>About you<span></span></div>
+      <div class="field-row">
+        <div class="field">
+          <label for="s2LastName">Last Name<span class="req-star">*</span></label>
+          <input type="text" id="s2LastName" autocapitalize="words" required placeholder="e.g. Dela Cruz">
+        </div>
+        <div class="field">
+          <label for="s2FirstName">First Name<span class="req-star">*</span></label>
+          <input type="text" id="s2FirstName" autocapitalize="words" required placeholder="Enter the first name, and second name if any (e.g. Juan Miguel)">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="s2MiddleInitial">Middle Initial</label>
+          <input type="text" id="s2MiddleInitial" maxlength="1" placeholder="M.I.">
+        </div>
+        <div class="field">
+          <label for="s2Suffix">Suffix</label>
+          <input type="text" id="s2Suffix" placeholder="Jr., Sr., III">
+        </div>
+      </div>
+
+      <div class="field" id="s2SuffixPlacementWrap">
+        <label>Suffix Placement</label>
+        <div class="radio-row">
+          <label><input type="radio" name="s2SuffixPlacement" value="none" checked> None</label>
+          <label><input type="radio" name="s2SuffixPlacement" value="last"> After Last Name</label>
+          <label><input type="radio" name="s2SuffixPlacement" value="first"> After First Name</label>
+        </div>
+      </div>
+
+      <div class="field suggest-wrap">
+        <label for="s2Gender">Gender<span class="req-star">*</span></label>
+        <div class="select-wrap"><input type="text" id="s2Gender" required autocomplete="off" placeholder="Type to search..."></div>
+        <div class="suggest-list" id="s2GenderList"></div>
+      </div>
+
+      <div class="form-sec"><b>3</b>Education<span></span></div>
+      <!-- Labels and boxes change with the school's education level (College: College/Course/Major,
+           SHS: Strand/Section, JHS and Grade School: Grade Level/Section). -->
+      <div class="field suggest-wrap" id="s2CollegeWrap">
+        <label for="s2College">College</label>
+        <div class="select-wrap"><input type="text" id="s2College" autocomplete="off" placeholder="Type to search (leave blank if none)"></div>
+        <div class="suggest-list" id="s2CollegeList"></div>
+      </div>
+
+      <div class="field suggest-wrap">
+        <label for="s2Course" id="s2CourseLbl">Course</label>
+        <div class="select-wrap"><input type="text" id="s2Course" autocomplete="off" placeholder="Type to search your course"></div>
+        <div class="suggest-list" id="s2CourseList"></div>
+      </div>
+
+      <div class="field suggest-wrap">
+        <label for="s2Major" id="s2MajorLbl">Major</label>
+        <div class="select-wrap"><input type="text" id="s2Major" autocomplete="off" placeholder="Type to search (leave blank if none)"></div>
+        <div class="suggest-list" id="s2MajorList"></div>
+      </div>
+
+      <!-- Ateneo de Davao University + Bachelor of Arts in Interdisciplinary Studies only. -->
+      <div class="addu-extra" id="s2MinorBox" aria-hidden="true"><div>
+        <div class="field suggest-wrap">
+          <label for="s2Minor">Minor<span class="req-star">*</span></label>
+          <div class="select-wrap"><input type="text" id="s2Minor" autocomplete="off" placeholder="Type to search your minor"></div>
+          <div class="suggest-list" id="s2MinorList"></div>
+        </div>
+      </div></div>
+
+      <div class="form-sec"><b>4</b>Contact<span></span></div>
+      <div class="field">
+        <label for="s2Contact">Contact Number<span class="req-star">*</span></label>
+        <div class="phone-wrap"><span aria-hidden="true">+63</span><input type="tel" id="s2Contact" required inputmode="tel" autocomplete="tel-national" placeholder="917 123 4567" aria-describedby="s2ContactHint"></div>
+        <div class="field-hint" id="s2ContactHint">Your 10-digit mobile number, e.g. 917 123 4567</div>
+      </div>
+
+      <div class="field">
+        <label for="s2Socials">Socials (Facebook name, etc.)</label>
+        <input type="text" id="s2Socials" placeholder="Facebook or Instagram, in case we can't reach your number or email">
+      </div>
+
+      <div class="field">
+        <span class="eyebrow" style="display:block; text-align:center; margin-bottom:6px;">Name Preview</span>
+        <div class="name-preview-banner" id="s2NamePreview">—</div>
+      </div>
+      </div><!-- /s2Rest -->
+
+      <div class="step2-actions">
+        <button type="button" class="btn btn-ghost" id="step2Cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="step2Submit" disabled>Next</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- DASHBOARD (unlocked only after email verification)             -->
+<!-- ============================================================ -->
+<div class="dash" id="dashboard">
+  <div class="dash-shell">
+
+    <aside class="dash-sidebar">
+      <div class="side-brand">
+        <img src="/portal/GPS.png" data-dark-src="/portal/GPS-dark.png" width="1200" height="531" alt="Grad Pro Studios" class="side-logo">
+      </div>
+
+      <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme"></button>
+
+      <button class="tabs-toggle" id="tabsToggle" aria-label="Open menu" aria-expanded="false" aria-controls="tabsList">
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="tabs" id="tabsList">
+        <button class="tab active" data-tab="tab-dashboard"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Dashboard</button>
+        <button class="tab" data-tab="tab-appointments"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>Appointments</button>
+        <button class="tab" data-tab="tab-notice"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M16 9a3 3 0 0 1 0 6"/></svg>Notice</button>
+        <button class="tab" data-tab="tab-registration"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Student Info</button>
+        <button class="tab" data-tab="tab-payment"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M16 13h2M3 10h18"/></svg>Payment<span class="tab-soon">Soon</span></button>
+        <button class="tab" data-tab="tab-images"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>Photos<span class="tab-soon">Soon</span></button>
+        <button class="tab signout-menu" id="signOutBtn"><svg class="tab-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4M6 12h10"/></svg>Sign out</button>
+      </div>
+    </aside>
+
+    <main class="dash-main">
+
+      <!-- DASHBOARD -->
+      <div class="tab-panel active" id="tab-dashboard">
+        <div class="dbx-head">
+          <span class="eyebrow" id="dbDate"></span>
+          <h1 id="dashGreeting">Welcome</h1>
+          <p id="dashSub">Always stay updated in your student portal.</p>
+        </div>
+
+        <div class="dbx-row">
+          <!-- Your pictorial: booked date, or Book now (filled by renderDashboardPictorial) -->
+          <section class="dbx-card dbx-pict" id="dbPictorial" aria-label="Your pictorial"><div class="stub-empty">Loading…</div></section>
+
+          <section class="dbx-card" aria-labelledby="dbNoticeTitle">
+            <div class="dbx-card-head">
+              <h3 id="dbNoticeTitle">Daily notice</h3>
+              <button type="button" class="dbx-link" data-goto-tab="tab-notice">See all</button>
+            </div>
+            <div id="dbNoticeList"><div class="stub-empty">Loading…</div></div>
+          </section>
+        </div>
+
+        <!-- Payment: no amounts are posted yet, so a note instead of ₱0 cards -->
+        <section class="dbx-card dbx-pay">
+          <span class="dbx-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M16 13h2M3 10h18"/></svg></span>
+          <div><strong>Payment details</strong> will appear here once the studio posts your package and balance.</div>
+        </section>
+      </div>
+
+      <!-- PAYMENT INFO (under construction) -->
+      <div class="tab-panel" id="tab-payment">
+        <div class="stub-card">
+          <h3>Payment Info</h3>
+          <p>Your payment records will appear here once studio staff finish setting up the admin billing tool.</p>
+          <div class="stub-empty">Under construction.</div>
+        </div>
+      </div>
+
+      <!-- REGISTRATION -->
+      <div class="tab-panel" id="tab-registration">
+        <div class="stub-card">
+          <div class="stub-card-header">
+            <div>
+              <h3>Your details</h3>
+            </div>
+            <button class="btn-ghost btn-inline" id="editProfileBtn">Edit Details</button>
+          </div>
+          <div id="profileAlert"></div>
+          <div class="profile-grid" id="profileGrid">
+            <!-- populated by JS -->
+          </div>
+          <div class="profile-edit-actions hidden" id="profileEditActions">
+            <button class="btn btn-primary" id="saveProfileBtn" type="button">Save changes</button>
+            <button class="btn btn-ghost" id="cancelProfileBtn" type="button">Cancel</button>
+          </div>
+        </div>
+      <div class="stub-card" style="margin-top:18px;">
+        <div class="stub-card-header"><div><h3>Connected accounts</h3></div></div>
+        <div id="socialAlert"></div>
+        <div class="field"><label for="socialPw">Confirm your password to connect or disconnect</label><input type="password" id="socialPw" autocomplete="current-password" placeholder="••••••••"></div>
+        <div id="socialList"></div>
+      </div>
+      <div class="stub-card" style="margin-top:18px;"><div class="stub-card-header"><div><h3>Change password</h3></div></div><div id="cpAlert"></div><div class="field" id="turnstileCp"></div><p>We will send a 6-digit verification code to your registered email before you can set a new password.</p><div id="cpStep1"><button type="button" class="btn btn-primary btn-inline" id="cpSendBtn">Send verification code</button></div><div id="cpStep2" class="hidden"><div class="field"><label for="cpOtp">Verification code</label><input type="text" id="cpOtp" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="123456" autocomplete="one-time-code"></div><div class="field"><label for="cpNew">New password</label><input type="password" id="cpNew" autocomplete="new-password" minlength="8" placeholder="At least 8 characters"></div><div class="field"><label for="cpConfirm">Confirm new password</label><input type="password" id="cpConfirm" autocomplete="new-password" minlength="8" placeholder="Re-enter your new password"></div><div class="profile-edit-actions"><button type="button" class="btn btn-primary" id="cpSaveBtn">Update password</button><button type="button" class="btn btn-ghost" id="cpResendBtn">Resend code</button><button type="button" class="btn btn-ghost" id="cpCancelBtn">Cancel</button></div></div></div>
+      </div>
+
+      <!-- UPLOADED IMAGES (under construction) -->
+      <div class="tab-panel" id="tab-images">
+        <div class="stub-card">
+          <h3>Uploaded images</h3>
+          <p>Your school ID, raw shoot photos, and final edited images will be listed here once uploads open.</p>
+          <div id="softCopyList"><div class="stub-empty">Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- NOTICE (functional) -->
+      <div class="tab-panel" id="tab-notice">
+        <h3 class="db-section-title">All Notices</h3>
+        <div id="noticeBookingReminder"></div>
+        <div id="noticeFullList"><div class="stub-empty">Loading…</div></div>
+      </div>
+
+      <!-- APPOINTMENTS -->
+      <div class="tab-panel" id="tab-appointments">
+        <h3 class="db-section-title">Your Appointments</h3>
+        <div id="apptAlert"></div>
+        <div id="appointmentsList"><div class="stub-empty">Loading…</div></div>
+        <!-- Hair & Makeup (optional add-on; filled by renderHmu, empty while the school has it off) -->
+        <div id="hmuAlert"></div>
+        <div id="hmuSection"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ---------------- PICTORIAL SCHEDULE MODAL (book / reschedule / cancel) ---------------- -->
+<div class="sched-overlay hidden" id="schedModal" role="dialog" aria-modal="true" aria-labelledby="schedTitle">
+  <div class="sched-card">
+    <div class="step-bar hidden" id="schedSteps" aria-label="Registration progress"><div class="sb-step done"><span class="sb-bar"></span><span class="sb-lbl">Account</span></div><div class="sb-step done"><span class="sb-bar"></span><span class="sb-lbl">Verify</span></div><div class="sb-step done"><span class="sb-bar"></span><span class="sb-lbl">Details</span></div><div class="sb-step on" aria-current="step"><span class="sb-bar"></span><span class="sb-lbl">Book</span></div></div>
+    <div class="sched-done hidden" id="schedDone" role="status">
+      <div class="sd-icon" aria-hidden="true">&#10003;</div>
+      <h2 class="sd-title" id="schedDoneTitle" tabindex="-1">You're booked!</h2>
+      <p class="sd-sub" id="schedDoneSub">Your pictorial schedule is saved.</p>
+      <div class="sd-when" id="schedDoneWhen"></div>
+      <div class="arrive-note sd-arrive" id="schedDoneArrive"></div>
+      <div class="sd-bring"><strong>Look fresh for your pictorial</strong><ul id="schedDoneBring"></ul></div>
+      <div class="sched-actions">
+        <button type="button" class="btn btn-ghost" id="schedDoneClose">View my appointment</button>
+        <button type="button" class="btn btn-primary" id="schedDoneCal">Add to calendar</button>
+      </div>
+    </div>
+    <div class="sched-head">
+      <div>
+        <div class="eyebrow sched-eyebrow">Pictorial Schedule</div>
+        <h2 class="sched-title" id="schedTitle" tabindex="-1">Choose your pictorial schedule</h2>
+        <p class="sched-sub" id="schedSub"></p>
+      </div>
+      <button type="button" class="sched-close" id="schedClose" aria-label="Close">&times;</button>
+    </div>
+
+    <div id="schedAlert"></div>
+
+    <div class="sched-body" id="schedPicker">
+      <div class="sched-cal">
+        <div class="sched-cal-nav">
+          <button type="button" class="sched-nav-btn" id="schedPrev" aria-label="Previous month">&#8249;</button>
+          <span class="sched-month" id="schedMonth"></span>
+          <button type="button" class="sched-nav-btn" id="schedNext" aria-label="Next month">&#8250;</button>
+        </div>
+        <div class="sched-weekdays" aria-hidden="true"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+        <div class="sched-days" id="schedDays"></div>
+        <div class="sched-legend"><span><i class="lg-open"></i>Available</span><span><i class="lg-sel"></i>Selected</span><span><i class="lg-off"></i>Full / no slots</span></div>
+      </div>
+      <div class="sched-times">
+        <div class="sched-times-head" id="schedDateLabel">Select a date</div>
+        <div class="sched-time-list" id="schedTimes"></div>
+        <div class="arrive-note hidden" id="schedArriveNote" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="sched-empty hidden" id="schedCancelNote">
+      Your slot will be released to other students right away. You can book a new schedule any time while booking is open for your school.
+    </div>
+
+    <div class="sched-actions">
+      <button type="button" class="btn btn-ghost" id="schedSkip">Skip for now</button>
+      <button type="button" class="btn btn-primary" id="schedConfirm" disabled>Confirm Pictorial Schedule</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------------- COOKIE CONSENT BANNER ---------------- -->
+<div class="cookie-banner hidden" id="cookieBanner">
+  <p class="cookie-text">
+    We use cookies to keep you logged in and improve your experience on this site.
+    By continuing to browse, you agree to our
+    <a href="#" class="link">Privacy Policy</a>.
+  </p>
+  <button class="btn btn-primary cookie-accept" id="cookieAcceptBtn">Accept</button>
+</div>
+
+<script src="/portal/theme.js"></script>
+<script src="/portal/supabase-client.js"></script>
+<script src="/portal/script.js"></script>
+</body>
+</html>

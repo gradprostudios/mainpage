@@ -1,7 +1,7 @@
 {
   "rewrites": [
-    { "source": "/login", "destination": "https://register.gradprostudios.com/index.html" },
-    { "source": "/dashboard", "destination": "https://register.gradprostudios.com/index.html" },
-    { "source": "/portal/:path*", "destination": "https://register.gradprostudios.com/:path*" }
+    { "source": "/login", "destination": "/portal/index.html" },
+    { "source": "/register", "destination": "/portal/index.html" },
+    { "source": "/dashboard", "destination": "/portal/index.html" }
   ]
 }
